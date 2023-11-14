@@ -22,7 +22,7 @@
     <GoInput
       label="Insulin duration"
       hint="How long does insulin last"
-      v-model="settings.insulineDuration"
+      v-model="settings.insulinDuration"
       type="number"
       step="0.1"
     >
@@ -48,7 +48,7 @@ onMounted(async () => {
     settings.value = {
       minBG: "",
       maxBolus: "",
-      insulineDuration: "",
+      insulinDuration: "",
     };
   }
 });

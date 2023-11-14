@@ -21,12 +21,12 @@
           variant="success"
           aria-label="Bolus Parameters"
         >
-          <GoIcon name="calculate" decorative />
+          <GoIcon name="tune" decorative />
         </GoButton>
       </div>
     </GoHeaderBar>
     <div class="container">
-      <pre>{{ settings }}</pre>
+      <Calculator />
     </div>
 
     <GoDialog ref="settingsDialog" persistent heading="Settings">

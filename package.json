@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@go-ui/vue": "^1.30.1",
+    "dayjs": "^1.11.10",
     "localforage": "^1.10.0",
     "pinia": "^2.1.7",
     "vee-validate": "^4.11.8",

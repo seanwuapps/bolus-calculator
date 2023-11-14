@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import { Settings } from "~/types/settings";
 import localforage from "localforage";
-import { BolusParams } from "~/types/bolus";
+import { BolusParams, BolusRecord } from "~/types/bolus";
+import dayjs from "dayjs";
 const defaultParams = () => ({
   targetBGs: [],
   icrs: [],
@@ -12,9 +13,69 @@ export const useBolusStore = defineStore("bolus", {
     return {
       isLoading: false,
       params: { ...defaultParams() } as BolusParams,
+      currentBG: undefined as string | undefined,
+      currentCarbs: undefined as string | undefined,
+      suggestedBolus: undefined as number | undefined,
+      actualBolus: undefined as number | undefined,
+      bolusHistory: undefined as BolusRecord[] | undefined,
     };
   },
+  getters: {
+    lastBolus: (state) =>
+      state.bolusHistory?.length
+        ? state.bolusHistory[state.bolusHistory.length - 1]
+        : undefined,
+  },
   actions: {
+    async saveBolus(targetBG: any, icr: any, isf: any) {
+      if (
+        !this.currentBG ||
+        !this.currentCarbs ||
+        !this.suggestedBolus ||
+        !this.actualBolus
+      ) {
+        return;
+      }
+
+      const record: BolusRecord = {
+        ts: new Date(),
+        targetBG,
+        icr,
+        isf,
+        bg: Number(this.currentBG),
+        carbs: Number(this.currentCarbs),
+        suggestedBolus: this.suggestedBolus,
+        actualBolus: this.actualBolus,
+      };
+
+      if (!this.bolusHistory) {
+        this.bolusHistory = [];
+      }
+
+      this.bolusHistory.push(record);
+
+      await localforage.setItem(
+        "bolus-history",
+        JSON.stringify(this.bolusHistory)
+      );
+    },
+    async loadBolusHistory() {
+      this.isLoading = true;
+      try {
+        const history = await localforage.getItem<string>("bolus-history");
+        this.bolusHistory = history
+          ? (JSON.parse(history) as BolusRecord[])
+          : [];
+        return this.bolusHistory;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    resetCalculation() {
+      this.currentBG = undefined;
+      this.suggestedBolus = undefined;
+      this.actualBolus = undefined;
+    },
     async saveParams(params?: BolusParams) {
       const value = params ? params : this.params;
       await localforage.setItem("bolus-params", JSON.stringify(value));
@@ -30,6 +91,32 @@ export const useBolusStore = defineStore("bolus", {
       } finally {
         this.isLoading = false;
       }
+    },
+
+    async getInsulinOnBoard() {
+      const settingStore = useSettingsStore();
+      const settings = await settingStore.getSettings();
+
+      if (!settings?.insulinDuration || !this.lastBolus) {
+        return 0;
+      }
+      const { actualBolus, ts } = this.lastBolus;
+      if (!actualBolus || !ts) {
+        return 0;
+      }
+      const insulinDurationInHours = Number(settings.insulinDuration); // hrs
+      const insulinDuration = insulinDurationInHours * 60;
+
+      const timeSinceLastBolus = dayjs().diff(dayjs(ts), "minute");
+
+      if (timeSinceLastBolus > insulinDuration) {
+        return 0;
+      }
+
+      //  inculin onboard / total insulin = time left / insulin duration
+      return (
+        (insulinDuration - timeSinceLastBolus / insulinDuration) * actualBolus
+      );
     },
   },
 });
