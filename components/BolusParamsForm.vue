@@ -135,20 +135,20 @@
   </section>
 
   <hr />
-  <div class="d-flex">
-    <GoButton class="mr-2" variant="primary" @click="save">
-      <GoIcon name="done" decorative></GoIcon>
-      Save
-    </GoButton>
-    <GoButton variant="neutral" outline-fill @click="$emit('close')">
-      <GoIcon name="close" decorative></GoIcon>
-      Close
-    </GoButton>
-  </div>
+  <GoButtonGroup>
+    <GoButton variant="primary" @click="save"> Save </GoButton>
+    <GoButton variant="text" flat @click="$emit('close')"> Close </GoButton>
+  </GoButtonGroup>
 </template>
 
 <script setup lang="ts">
-import { GoInput, GoButton, GoIcon, GoHeadingRow } from "@go-ui/vue";
+import {
+  GoInput,
+  GoButton,
+  GoIcon,
+  GoHeadingRow,
+  GoButtonGroup,
+} from "@go-ui/vue";
 import { useBolusStore } from "~/stores/bolus.store";
 
 const emit = defineEmits(["close"]);

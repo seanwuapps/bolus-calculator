@@ -1,43 +1,50 @@
 <template>
   <div>
-    <pre>{{ settingsStore.settings }}</pre>
-    <pre>{{ bolusStore.params }}</pre>
-    <pre>{{ currentParams }}</pre>
-    <GoInput
-      class="mb-2"
-      label="Current BG"
-      hint="Current blood glucose level"
-      required
-      v-model="currentBG"
-    >
-      <div slot="suffix">mmol/L</div>
-    </GoInput>
+    <div v-if="!showBolusResult">
+      <GoInput
+        class="mb-2"
+        label="Current BG"
+        hint="Current blood glucose level"
+        required
+        v-model="currentBG"
+        :disabled="showBolusResult"
+      >
+        <div slot="suffix">mmol/L</div>
+      </GoInput>
 
-    <GoInput
-      class="mb-2"
-      label="Meal Carbs"
-      hint="Carbohydrate intake"
-      required
-      v-model="currentCarbs"
-      type="number"
-    >
-      <div slot="suffix">g</div>
-    </GoInput>
+      <GoInput
+        class="mb-2"
+        label="Meal Carbs"
+        hint="Carbohydrate intake"
+        required
+        v-model="currentCarbs"
+        type="number"
+        :disabled="showBolusResult"
+      >
+        <div slot="suffix">g</div>
+      </GoInput>
 
-    <hr />
+      <hr />
 
-    <GoButton
-      variant="primary"
-      :disabled="!canCalculate"
-      type="button"
-      @click="submit"
-    >
-      Calculate
-    </GoButton>
+      <GoButtonGroup>
+        <GoButton
+          variant="primary"
+          :disabled="!canCalculate"
+          type="button"
+          @click="submit"
+        >
+          Calculate
+        </GoButton>
 
-    <GoDialog ref="bolusDialog" heading="Bolus suggestion" persistent>
+        <!-- cancel button emits close event -->
+        <GoButton flat variant="text" type="button" @click="$emit('close')"
+          >Cancel</GoButton
+        >
+      </GoButtonGroup>
+    </div>
+    <div v-else>
       <div class="text-center">
-        <p>Suggested bolus insulin</p>
+        <h4>Suggested bolus insulin</h4>
         <div
           class="d-flex align-items-center justify-content-center"
           style="gap: 1rem"
@@ -69,12 +76,12 @@
           <GoButton block="all" variant="primary" @click="confirmBolus"
             >Confirm</GoButton
           >
-          <GoButton block="all" outline @click="closeBolusDialog"
+          <GoButton block="all" outline @click="showBolusResult = false"
             >Cancel</GoButton
           >
         </GoButtonGroup>
       </div>
-    </GoDialog>
+    </div>
   </div>
 </template>
 
@@ -158,23 +165,21 @@ const calculate = async () => {
   return sumBolus;
 };
 
-const bolusDialog = ref();
+const showBolusResult = ref(false);
 
 const submit = async () => {
   bolusStore.suggestedBolus = Math.round(await calculate());
   bolusStore.actualBolus = bolusStore.suggestedBolus;
-  bolusDialog.value.$el.open();
+  showBolusResult.value = true;
 };
+
+const emit = defineEmits(["close"]);
 
 const confirmBolus = async () => {
   // save bolus into history
   const { targetBG, icr, isf } = currentParams.value;
   await bolusStore.saveBolus(targetBG, icr, isf);
 
-  closeBolusDialog();
-};
-
-const closeBolusDialog = () => {
-  bolusDialog.value.$el.close();
+  emit("close");
 };
 </script>

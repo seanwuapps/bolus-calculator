@@ -21,10 +21,16 @@ export const useBolusStore = defineStore("bolus", {
     };
   },
   getters: {
-    lastBolus: (state) =>
-      state.bolusHistory?.length
+    lastBolus(state): BolusRecord | undefined {
+      return state.bolusHistory?.length
         ? state.bolusHistory[state.bolusHistory.length - 1]
-        : undefined,
+        : undefined;
+    },
+    lastBolusTimeDisplay(): string | undefined {
+      return this.lastBolus?.ts
+        ? dayjs(this.lastBolus.ts).format("hh:mm A, DD MMM")
+        : undefined;
+    },
   },
   actions: {
     async saveBolus(targetBG: any, icr: any, isf: any) {
@@ -92,16 +98,14 @@ export const useBolusStore = defineStore("bolus", {
         this.isLoading = false;
       }
     },
-
-    async getInsulinOnBoard() {
+    async getInsulinOnBoardRatio() {
       const settingStore = useSettingsStore();
       const settings = await settingStore.getSettings();
-
       if (!settings?.insulinDuration || !this.lastBolus) {
         return 0;
       }
-      const { actualBolus, ts } = this.lastBolus;
-      if (!actualBolus || !ts) {
+      const { ts } = this.lastBolus;
+      if (!ts) {
         return 0;
       }
       const insulinDurationInHours = Number(settings.insulinDuration); // hrs
@@ -112,11 +116,17 @@ export const useBolusStore = defineStore("bolus", {
       if (timeSinceLastBolus > insulinDuration) {
         return 0;
       }
+      return Number((insulinDuration - timeSinceLastBolus) / insulinDuration);
+    },
 
+    async getInsulinOnBoard() {
+      if (!this.lastBolus?.actualBolus) {
+        return 0;
+      }
+      const insulinOnBoardRatio = await this.getInsulinOnBoardRatio();
       //  inculin onboard / total insulin = time left / insulin duration
-      return (
-        (insulinDuration - timeSinceLastBolus / insulinDuration) * actualBolus
-      );
+      const result = insulinOnBoardRatio * this.lastBolus.actualBolus;
+      return Number(result.toFixed(4));
     },
   },
 });

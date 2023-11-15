@@ -29,13 +29,15 @@
       <div slot="suffix">hours</div>
     </GoInput>
     <hr />
-    <GoButton variant="primary" @click="saveSettings"> Save </GoButton>
-    <GoButton variant="text" @click="$emit('close')"> Close </GoButton>
+    <GoButtonGroup>
+      <GoButton variant="primary" @click="saveSettings"> Save </GoButton>
+      <GoButton variant="text" flat @click="$emit('close')"> Close </GoButton>
+    </GoButtonGroup>
   </form>
 </template>
 
 <script setup lang="ts">
-import { GoButton, GoInput } from "@go-ui/vue";
+import { GoButton, GoButtonGroup, GoInput } from "@go-ui/vue";
 import { useSettingsStore } from "@/stores/settings.store";
 const emit = defineEmits(["close"]);
 const settingsStore = useSettingsStore();

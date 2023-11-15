@@ -4,6 +4,16 @@
       <div slot="actions">
         <GoButton
           class="mr-2"
+          @click="openCalculatorDialog"
+          round
+          variant="primary"
+          aria-label="Open Bolus Calculator"
+        >
+          <GoIcon name="calculate" decorative />
+          Calculator
+        </GoButton>
+        <GoButton
+          class="mr-2"
           @click="openSettingsDialog"
           icon
           outline-fill
@@ -25,9 +35,8 @@
         </GoButton>
       </div>
     </GoHeaderBar>
-    <div class="container">
-      <Calculator />
-    </div>
+
+    <Dashboard v-if="settingsStore.settings?.insulinDuration" />
 
     <GoDialog ref="settingsDialog" persistent heading="Settings">
       <SettingsForm @close="closeSettingsDialog" />
@@ -36,18 +45,28 @@
     <GoDialog ref="bolusParamsDialog" persistent heading="Bolus Parameters">
       <BolusParamsForm @close="closeBolusParamsDialog" />
     </GoDialog>
+
+    <GoDialog ref="calculatorDialog" persistent heading="Bolus Calculator">
+      <Calculator @close="closeCalculatorDialog" />
+    </GoDialog>
   </ClientOnly>
 </template>
 <script setup lang="ts">
 import { GoButton, GoDialog, GoHeaderBar, GoIcon } from "@go-ui/vue";
 import { useSettingsStore } from "@/stores/settings.store";
 
-const settingsStore = useSettingsStore();
+useHead({
+  htmlAttrs: {
+    lang: "en",
+    "data-theme": "light",
+  },
+});
 
-const { settings } = storeToRefs(settingsStore);
+const settingsStore = useSettingsStore();
 
 const settingsDialog = ref(null);
 const bolusParamsDialog = ref(null);
+const calculatorDialog = ref(null);
 
 const openSettingsDialog = () => {
   (settingsDialog.value as any).$el.open();
@@ -55,12 +74,18 @@ const openSettingsDialog = () => {
 const openBolusParamsDialog = () => {
   (bolusParamsDialog.value as any).$el.open();
 };
+const openCalculatorDialog = () => {
+  (calculatorDialog.value as any).$el.open();
+};
 
 const closeSettingsDialog = () => {
   (settingsDialog.value as any).$el.close();
 };
 const closeBolusParamsDialog = () => {
   (bolusParamsDialog.value as any).$el.close();
+};
+const closeCalculatorDialog = () => {
+  (calculatorDialog.value as any).$el.close();
 };
 
 onMounted(async () => {
