@@ -15,7 +15,11 @@
           <dt class="mr-2">Suggested Bolus</dt>
           <dd>{{ bolusStore.lastBolus.suggestedBolus }} u</dd>
           <dt class="mr-2">Actual Bolus</dt>
-          <dd>{{ bolusStore.lastBolus.actualBolus }} u</dd>
+          <dd>
+            <strong class="text-size-2"
+              >{{ bolusStore.lastBolus.actualBolus }} u</strong
+            >
+          </dd>
         </dl>
       </GoCard>
       <GoCard border heading="Insulin on board">
@@ -24,26 +28,75 @@
             {{ currentInsulinOnBoard }}
           </strong>
           <span class="text-size-3"> u</span>
+          <p>Out of {{ bolusStore.lastBolus?.actualBolus }} u</p>
+        </div>
+
+        <div class="text-center">
+          <GoProgress
+            :value="currentInsulinOnBoard"
+            :max="bolusStore.lastBolus?.actualBolus"
+          />
         </div>
 
         <div class="text-center" slot="footer">
-          Insulin on board last until <strong>{{ insulinLastTill }}</strong>
+          Insulin on board last until
+          <div>
+            <strong>{{ insulinLastTill }}</strong>
+          </div>
+        </div>
+      </GoCard>
+      <GoCard border heading="Settings">
+        <dl v-if="!!settings">
+          <dt class="mr-2">Min. glucose for calculation</dt>
+          <dd>{{ settings.minBG }} mmol/L</dd>
+          <dt class="mr-2">Max. bolus suggestion</dt>
+          <dd>{{ settings.maxBolus }} mmol/L</dd>
+          <dt class="mr-2">Insulin duration</dt>
+          <dd>{{ settings.insulinDuration }} hours</dd>
+        </dl>
+        <p v-else>
+          No settings found. Click the button below to configure them.
+        </p>
+        <div slot="footer">
+          <GoButton
+            block="all"
+            @click="openSettingsDialog"
+            round
+            variant="secondary"
+          >
+            <GoIcon name="settings" decorative />
+            <span>Settings</span>
+          </GoButton>
         </div>
       </GoCard>
     </GoCardRow>
+
+    <GoDialog ref="settingsDialog" persistent heading="Settings">
+      <SettingsForm @close="closeSettingsDialog" />
+    </GoDialog>
   </div>
 </template>
 
 <script lang="ts">
-import { GoCard, GoCardRow, GoProgress } from "@go-ui/vue";
+import {
+  GoCard,
+  GoButton,
+  GoCardRow,
+  GoProgress,
+  GoDialog,
+  GoIcon,
+} from "@go-ui/vue";
 import dayjs from "dayjs";
 
 export default defineComponent({
   name: "Dashboard",
   components: {
     GoCard,
+    GoButton,
     GoCardRow,
     GoProgress,
+    GoDialog,
+    GoIcon,
   },
   setup() {
     const settingsStore = useSettingsStore();
@@ -69,14 +122,30 @@ export default defineComponent({
         .add(Number(insulinDuration), "hours")
         .format("HH:mm, MMM DD");
     },
+    settings() {
+      return this.settingsStore.settings;
+    },
   },
   async mounted() {
+    const settings = await this.settingsStore.getSettings();
+    if (!settings) {
+      (this.$refs.settingsDialog as any).$el.open();
+    }
+
     await this.bolusStore.loadBolusHistory();
     this.currentInsulinOnBoard = await this.bolusStore.getInsulinOnBoard();
 
     setInterval(async () => {
       this.currentInsulinOnBoard = await this.bolusStore.getInsulinOnBoard();
     }, 5000);
+  },
+  methods: {
+    openSettingsDialog() {
+      (this.$refs.settingsDialog as any).$el.open();
+    },
+    closeSettingsDialog() {
+      (this.$refs.settingsDialog as any).$el.close();
+    },
   },
 });
 </script>
