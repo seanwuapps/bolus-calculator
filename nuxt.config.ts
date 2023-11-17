@@ -16,4 +16,9 @@ export default defineNuxtConfig({
     typeCheck: true,
   },
   modules: ["@pinia/nuxt"],
+  pwa: {
+    manifest: {
+      name: "Bolus Calculator",
+    },
+  },
 });
