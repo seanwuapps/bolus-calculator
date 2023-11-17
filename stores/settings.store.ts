@@ -27,5 +27,13 @@ export const useSettingsStore = defineStore("settings", {
         this.isLoading = false;
       }
     },
+    initialiseSettings() {
+      this.settings = {
+        minBG: "",
+        maxBolus: "",
+        insulinDuration: "",
+      };
+      console.log("asdf", this.settings);
+    },
   },
 });

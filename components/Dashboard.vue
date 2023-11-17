@@ -35,8 +35,6 @@
         </div>
 
         <div class="text-center" v-if="totalAffectiveBolus">
-          <pre>{{ bolusStore.currentInsulinOnBoard }}</pre>
-          <pre>{{ totalAffectiveBolus }}</pre>
           <GoProgress
             :value="bolusStore.currentInsulinOnBoard"
             :max="totalAffectiveBolus"
@@ -134,6 +132,7 @@ export default defineComponent({
   async mounted() {
     const settings = await this.settingsStore.getSettings();
     if (!settings) {
+      this.settingsStore.initialiseSettings();
       (this.$refs.settingsDialog as any).$el.open();
     }
 
