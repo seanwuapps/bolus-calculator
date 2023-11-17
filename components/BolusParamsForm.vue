@@ -6,16 +6,22 @@
       <div v-for="(icr, i) in icrs">
         <div class="row">
           <div class="col-3">
-            <GoInput label="Start time" v-model="icr.start"></GoInput>
+            <GoInput
+              type="time"
+              label="Start time"
+              v-model="icr.start"
+            ></GoInput>
           </div>
           <div class="col-3">
-            <GoInput label="End time" v-model="icr.end"></GoInput>
+            <GoInput type="time" label="End time" v-model="icr.end"></GoInput>
           </div>
           <div class="col">
             <GoInput
               label="Insulin to Carbohydrate Ratio (ICR)"
               type="number"
               v-model="icr.value"
+              step="0.1"
+              inputmode="decimal"
             >
               <div slot="prefix">1 unit for</div>
 
@@ -51,15 +57,21 @@
       <div v-for="(isf, i) in isfs">
         <div class="row">
           <div class="col-3">
-            <GoInput label="Start time" v-model="isf.start"></GoInput>
+            <GoInput
+              type="time"
+              label="Start time"
+              v-model="isf.start"
+            ></GoInput>
           </div>
           <div class="col-3">
-            <GoInput label="End time" v-model="isf.end"></GoInput>
+            <GoInput type="time" label="End time" v-model="isf.end"></GoInput>
           </div>
           <div class="col">
             <GoInput
               label="Insulin Sensitivity Factor (ISF)"
               type="number"
+              step="0.1"
+              inputmode="decimal"
               v-model="isf.value"
             >
               <div slot="prefix">1 unit for</div>
@@ -96,10 +108,14 @@
       <div v-for="(tbg, i) in targetBGs">
         <div class="row">
           <div class="col-3">
-            <GoInput label="Start time" v-model="tbg.start"></GoInput>
+            <GoInput
+              type="time"
+              label="Start time"
+              v-model="tbg.start"
+            ></GoInput>
           </div>
           <div class="col-3">
-            <GoInput label="End time" v-model="tbg.end"></GoInput>
+            <GoInput type="time" label="End time" v-model="tbg.end"></GoInput>
           </div>
           <div class="col">
             <GoInput
@@ -107,6 +123,7 @@
               type="number"
               v-model="tbg.value"
               step="0.1"
+              inputmode="decimal"
             >
               <div slot="suffix">mmol/L</div>
             </GoInput>

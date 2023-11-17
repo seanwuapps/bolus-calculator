@@ -2,6 +2,8 @@
   <div v-if="settings">
     <div v-if="!showBolusResult">
       <GoInput
+        type="number"
+        inputmode="decimal"
         class="mb-2"
         label="Current BG"
         hint="Current blood glucose level"
@@ -19,6 +21,7 @@
         required
         v-model="currentCarbs"
         type="number"
+        inputmode="decimal"
         :disabled="showBolusResult"
       >
         <div slot="suffix">g</div>

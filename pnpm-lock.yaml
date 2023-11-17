@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@go-ui/vue':
-    specifier: ^1.30.1
-    version: 1.30.1(vue@3.3.8)
+    specifier: ^1.30.2
+    version: 1.30.2(vue@3.3.8)
   dayjs:
     specifier: ^1.11.10
     version: 1.11.10
@@ -826,8 +826,8 @@ packages:
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
     dev: false
 
-  /@go-ui/core@1.30.1:
-    resolution: {integrity: sha512-PS6BaISHTHoa4TuDLqPGV8mZDLBzb6N72jchfM5EAhRh5gPTuPtvtsTZgGKQ4Jhi3oDJGTNgypdLA2gQVW4Xkg==}
+  /@go-ui/core@1.30.2:
+    resolution: {integrity: sha512-mgQVr6bAA9LfnUNsWd9MSnIShq65tG6qOckgHutmkpYZsM5fuUu5+3VcMdEJunk2hVzwe6GzJgXBFKd96qpO6Q==}
     dependencies:
       '@duetds/date-picker': 1.4.0
       '@floating-ui/dom': 1.5.3
@@ -842,13 +842,13 @@ packages:
       open-props: 1.6.10
     dev: false
 
-  /@go-ui/vue@1.30.1(vue@3.3.8):
-    resolution: {integrity: sha512-IwjD/InMyYKgB9+fe2USzyuU//LYKzG96flk+Z5xsmvEUplQVCptp5FvuTn9UDJf83ytBstkqMIbhLA02vq3NA==}
+  /@go-ui/vue@1.30.2(vue@3.3.8):
+    resolution: {integrity: sha512-s6yiBAt6P6FAsQJvcoeEBBdFh+A5U2vUX70Gn9prl53TMRxGx+TnA/TDCGI9YX42y3F/M5jZRfuE9e2ZiGNMaw==}
     peerDependencies:
       vue: ^3.3.4
     dependencies:
       '@duetds/date-picker': 1.4.0
-      '@go-ui/core': 1.30.1
+      '@go-ui/core': 1.30.2
       vue: 3.3.8(typescript@5.2.2)
     dev: false
 
