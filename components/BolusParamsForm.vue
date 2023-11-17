@@ -2,153 +2,131 @@
   <!-- ICR -->
   <section>
     <GoHeadingRow heading="Insulin Carbohydrate Ratio" heading-tag="h4" />
-    <div class="mb-2">
-      <div v-for="(icr, i) in icrs">
-        <div class="row">
-          <div class="col-3">
-            <GoInput
-              type="time"
-              label="Start time"
-              v-model="icr.start"
-            ></GoInput>
-          </div>
-          <div class="col-3">
-            <GoInput type="time" label="End time" v-model="icr.end"></GoInput>
-          </div>
-          <div class="col">
-            <GoInput
-              label="Insulin to Carbohydrate Ratio (ICR)"
-              type="number"
-              v-model="icr.value"
-              step="0.1"
-              inputmode="decimal"
-            >
-              <div slot="prefix">1 unit for</div>
+    <GoCardRow
+      :cols-tablet="1"
+      :cols-desktop="3"
+      :cols-large="3"
+      class="mb-2"
+      :key="`icr-${icrs.length}`"
+    >
+      <GoCard v-for="(icr, i) in icrs" :key="i">
+        <GoInput type="time" label="Start time" v-model="icr.start"></GoInput>
+        <GoInput type="time" label="End time" v-model="icr.end"></GoInput>
+        <GoInput
+          label="Insulin to Carbohydrate Ratio (ICR)"
+          type="number"
+          v-model="icr.value"
+          step="0.1"
+          inputmode="decimal"
+        >
+          <div slot="prefix">1 unit for</div>
 
-              <div slot="suffix">g</div>
-            </GoInput>
-          </div>
-          <div class="col-auto pt-5 pl-2 text-right">
-            <GoButton
-              variant="neutral"
-              outline
-              round
-              @click="params.icrs?.splice(i, 1)"
-              icon
-              aria-label="Delete"
-            >
-              <GoIcon name="delete" decorative></GoIcon>
-            </GoButton>
-          </div>
+          <div slot="suffix">g</div>
+        </GoInput>
+        <div class="text-end">
+          <GoButton
+            variant="critical"
+            outline
+            round
+            @click="params.icrs?.splice(i, 1)"
+            icon
+            aria-label="Delete"
+          >
+            <GoIcon name="delete" decorative></GoIcon>
+          </GoButton>
         </div>
-      </div>
-    </div>
-    <div class="text-end">
-      <GoButton variant="success" @click="addNew('icrs')">
-        <GoIcon name="add"></GoIcon>
-        Add Timeslot
-      </GoButton>
-    </div>
+      </GoCard>
+      <GoCard>
+        <GoButton variant="success" block="all" @click="addNew('icrs')">
+          <GoIcon name="add"></GoIcon>
+          Add Timeslot
+        </GoButton>
+      </GoCard>
+    </GoCardRow>
   </section>
   <!-- ISF -->
   <section>
     <GoHeadingRow heading="Insulin Sensitivity Factor" heading-tag="h4" />
-    <div class="mb-2">
-      <div v-for="(isf, i) in isfs">
-        <div class="row">
-          <div class="col-3">
-            <GoInput
-              type="time"
-              label="Start time"
-              v-model="isf.start"
-            ></GoInput>
-          </div>
-          <div class="col-3">
-            <GoInput type="time" label="End time" v-model="isf.end"></GoInput>
-          </div>
-          <div class="col">
-            <GoInput
-              label="Insulin Sensitivity Factor (ISF)"
-              type="number"
-              step="0.1"
-              inputmode="decimal"
-              v-model="isf.value"
-            >
-              <div slot="prefix">1 unit for</div>
-              <div slot="suffix">mmol/L</div>
-            </GoInput>
-          </div>
-          <div class="col-auto pt-5 pl-2 text-right">
-            <GoButton
-              variant="neutral"
-              outline
-              round
-              @click="params.isfs?.splice(i, 1)"
-              icon
-              aria-label="Delete"
-            >
-              <GoIcon name="delete" decorative></GoIcon>
-            </GoButton>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="text-end">
-      <GoButton variant="success" @click="addNew('isfs')">
-        <GoIcon name="add"></GoIcon>
-        Add Timeslot
-      </GoButton>
-    </div>
+    <GoCardRow
+      :cols-tablet="1"
+      :cols-desktop="3"
+      :cols-large="3"
+      class="mb-2"
+      :key="`isf-${isfs.length}`"
+    >
+      <GoCard v-for="(isf, i) in isfs">
+        <GoInput type="time" label="Start time" v-model="isf.start"></GoInput>
+        <GoInput type="time" label="End time" v-model="isf.end"></GoInput>
+        <GoInput
+          label="Insulin Sensitivity Factor (ISF)"
+          type="number"
+          step="0.1"
+          inputmode="decimal"
+          v-model="isf.value"
+        >
+          <div slot="prefix">1 unit for</div>
+          <div slot="suffix">mmol/L</div>
+        </GoInput>
+        <GoButton
+          variant="critical"
+          outline
+          round
+          @click="params.isfs?.splice(i, 1)"
+          icon
+          aria-label="Delete"
+        >
+          <GoIcon name="delete" decorative></GoIcon>
+        </GoButton>
+      </GoCard>
+      <GoCard>
+        <GoButton variant="success" block="all" @click="addNew('isfs')">
+          <GoIcon name="add"></GoIcon>
+          Add Timeslot
+        </GoButton>
+      </GoCard>
+    </GoCardRow>
   </section>
 
   <!-- Target BG -->
   <section>
     <GoHeadingRow heading="Target Glocose Level" heading-tag="h4" />
-    <div class="mb-2">
-      <div v-for="(tbg, i) in targetBGs">
-        <div class="row">
-          <div class="col-3">
-            <GoInput
-              type="time"
-              label="Start time"
-              v-model="tbg.start"
-            ></GoInput>
-          </div>
-          <div class="col-3">
-            <GoInput type="time" label="End time" v-model="tbg.end"></GoInput>
-          </div>
-          <div class="col">
-            <GoInput
-              label="Target Glocose Level"
-              type="number"
-              v-model="tbg.value"
-              step="0.1"
-              inputmode="decimal"
-            >
-              <div slot="suffix">mmol/L</div>
-            </GoInput>
-          </div>
-          <div class="col-auto pt-5 pl-2 text-end">
-            <GoButton
-              variant="neutral"
-              outline
-              round
-              @click="params.targetBGs?.splice(i, 1)"
-              icon
-              aria-label="Delete"
-            >
-              <GoIcon name="delete" decorative></GoIcon>
-            </GoButton>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="text-end">
-      <GoButton variant="success" @click="addNew('targetBGs')">
-        <GoIcon name="add"></GoIcon>
-        Add Timeslot
-      </GoButton>
-    </div>
+    <GoCardRow
+      :cols-tablet="1"
+      :cols-desktop="3"
+      :cols-large="3"
+      class="mb-2"
+      :key="`tbg-${targetBGs.length}`"
+    >
+      <GoCard v-for="(tbg, i) in targetBGs">
+        <GoInput type="time" label="Start time" v-model="tbg.start"></GoInput>
+        <GoInput type="time" label="End time" v-model="tbg.end"></GoInput>
+        <GoInput
+          label="Target Glocose Level"
+          type="number"
+          v-model="tbg.value"
+          step="0.1"
+          inputmode="decimal"
+        >
+          <div slot="suffix">mmol/L</div>
+        </GoInput>
+        <GoButton
+          variant="critical"
+          outline
+          round
+          @click="params.targetBGs?.splice(i, 1)"
+          icon
+          aria-label="Delete"
+        >
+          <GoIcon name="delete" decorative></GoIcon>
+        </GoButton>
+      </GoCard>
+      <GoCard>
+        <GoButton variant="success" block="all" @click="addNew('targetBGs')">
+          <GoIcon name="add"></GoIcon>
+          Add Timeslot
+        </GoButton>
+      </GoCard>
+    </GoCardRow>
   </section>
 
   <hr />
@@ -165,6 +143,8 @@ import {
   GoIcon,
   GoHeadingRow,
   GoButtonGroup,
+  GoCard,
+  GoCardRow,
 } from "@go-ui/vue";
 import { useBolusStore } from "~/stores/bolus.store";
 
