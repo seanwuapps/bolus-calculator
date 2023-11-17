@@ -209,9 +209,7 @@ const calculate = async () => {
 
   if (lastBolus.value) {
     // calculate insulin onboard
-    insulinOnBoard.value = Number(
-      (await bolusStore.getInsulinOnBoard()).toFixed(2)
-    );
+    insulinOnBoard.value = Number(bolusStore.currentInsulinOnBoard.toFixed(2));
 
     return sumBolus - insulinOnBoard.value;
   }

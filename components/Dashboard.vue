@@ -25,16 +25,21 @@
       <GoCard border heading="Insulin on board">
         <div class="text-center">
           <strong class="text-size-5">
-            {{ currentInsulinOnBoard }}
+            {{ bolusStore.currentInsulinOnBoard }}
           </strong>
           <span class="text-size-3"> u</span>
-          <p>Out of {{ bolusStore.lastBolus?.actualBolus }} u</p>
+          <p>
+            Out of the {{ bolusStore.activeInsulinRecords.length }} boluses in
+            the last {{ settings?.insulinDuration }} hours
+          </p>
         </div>
 
-        <div class="text-center">
+        <div class="text-center" v-if="totalAffectiveBolus">
+          <pre>{{ bolusStore.currentInsulinOnBoard }}</pre>
+          <pre>{{ totalAffectiveBolus }}</pre>
           <GoProgress
-            :value="currentInsulinOnBoard"
-            :max="bolusStore.lastBolus?.actualBolus"
+            :value="bolusStore.currentInsulinOnBoard"
+            :max="totalAffectiveBolus"
           />
         </div>
 
@@ -106,11 +111,6 @@ export default defineComponent({
       settingsStore,
     };
   },
-  data() {
-    return {
-      currentInsulinOnBoard: 0,
-    };
-  },
   computed: {
     insulinLastTill() {
       if (!this.bolusStore.lastBolus || !this.settingsStore.settings) {
@@ -125,6 +125,11 @@ export default defineComponent({
     settings() {
       return this.settingsStore.settings;
     },
+    totalAffectiveBolus() {
+      return this.bolusStore.activeInsulinRecords.reduce((accu, curr) => {
+        return accu + Number(curr.actualBolus);
+      }, 0);
+    },
   },
   async mounted() {
     const settings = await this.settingsStore.getSettings();
@@ -133,11 +138,6 @@ export default defineComponent({
     }
 
     await this.bolusStore.loadBolusHistory();
-    this.currentInsulinOnBoard = await this.bolusStore.getInsulinOnBoard();
-
-    setInterval(async () => {
-      this.currentInsulinOnBoard = await this.bolusStore.getInsulinOnBoard();
-    }, 5000);
   },
   methods: {
     openSettingsDialog() {
