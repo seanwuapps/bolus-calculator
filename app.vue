@@ -1,4 +1,5 @@
 <template>
+  <VitePwaManifest />
   <ClientOnly>
     <GoHeaderBar>
       <div slot="actions">
@@ -45,6 +46,12 @@ useHead({
     lang: "en",
     "data-theme": "light",
   },
+});
+// If you want to use it in setup, import from the nuxtApp.
+const { $pwa } = useNuxtApp();
+
+onMounted(() => {
+  console.log($pwa);
 });
 
 const settingsStore = useSettingsStore();
