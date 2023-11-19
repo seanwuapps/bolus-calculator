@@ -22,7 +22,7 @@ export default defineNuxtConfig({
       name: "Bolus Calculator",
       short_name: "Bolus Calculator",
       theme_color: "#23219d",
-      display: "fullscreen",
+      display: "standalone",
       start_url: "/",
       scope: "/",
       id: "/",
