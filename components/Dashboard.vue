@@ -1,28 +1,7 @@
 <template>
   <div class="container mt-4">
     <GoCardRow :cols-tablet="2" :cols-desktop="3" :cols-large="3">
-      <GoCard
-        border
-        heading="Last Bolus"
-        v-if="bolusStore.lastBolus"
-        :sub-heading="bolusStore.lastBolusTimeDisplay"
-      >
-        <dl>
-          <dt class="mr-2">Glucose</dt>
-          <dd>{{ bolusStore.lastBolus.bg }} mmol/L</dd>
-          <dt class="mr-2">Meal Carbs</dt>
-          <dd>{{ bolusStore.lastBolus.carbs }} g</dd>
-          <dt class="mr-2">Suggested Bolus</dt>
-          <dd>{{ bolusStore.lastBolus.suggestedBolus }} u</dd>
-          <dt class="mr-2">Actual Bolus</dt>
-          <dd>
-            <strong class="text-size-2"
-              >{{ bolusStore.lastBolus.actualBolus }} u</strong
-            >
-          </dd>
-        </dl>
-      </GoCard>
-      <GoCard border heading="Insulin on board">
+      <GoCard heading="Insulin on board">
         <div class="text-center">
           <strong class="text-size-5">
             {{ bolusStore.currentInsulinOnBoard }}
@@ -48,7 +27,28 @@
           </div>
         </div>
       </GoCard>
-      <GoCard border heading="Settings">
+
+      <GoCard
+        heading="Last Bolus"
+        v-if="bolusStore.lastBolus"
+        :sub-heading="bolusStore.lastBolusTimeDisplay"
+      >
+        <dl>
+          <dt class="mr-2">Glucose</dt>
+          <dd>{{ bolusStore.lastBolus.bg }} mmol/L</dd>
+          <dt class="mr-2">Meal Carbs</dt>
+          <dd>{{ bolusStore.lastBolus.carbs }} g</dd>
+          <dt class="mr-2">Suggested Bolus</dt>
+          <dd>{{ bolusStore.lastBolus.suggestedBolus }} u</dd>
+          <dt class="mr-2">Actual Bolus</dt>
+          <dd>
+            <strong class="text-size-2"
+              >{{ bolusStore.lastBolus.actualBolus }} u</strong
+            >
+          </dd>
+        </dl>
+      </GoCard>
+      <GoCard heading="Settings">
         <dl v-if="!!settings">
           <dt class="mr-2">Min. glucose for calculation</dt>
           <dd>{{ settings.minBG }} mmol/L</dd>
