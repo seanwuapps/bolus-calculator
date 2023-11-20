@@ -133,43 +133,8 @@ import dayjs from "dayjs";
 const settingsStore = useSettingsStore();
 const bolusStore = useBolusStore();
 const { settings } = storeToRefs(settingsStore);
-const { params, currentBG, currentCarbs, lastBolus, actualBolus } =
+const { currentParams, currentBG, currentCarbs, lastBolus, actualBolus } =
   storeToRefs(bolusStore);
-
-const isCurrentSetting = (
-  item: { start: string; end: string; value: string },
-  now: dayjs.Dayjs,
-  currentDate: string
-) => {
-  const start = dayjs(`${currentDate} ${item.start}`);
-  const end = dayjs(`${currentDate} ${item.end}`);
-  return (
-    start.isSame(now, "minute") || (start.isBefore(now) && end.isAfter(now))
-  );
-};
-
-/**
- * get settings for the current time
- */
-const currentParams = computed(() => {
-  const now = dayjs();
-  const currentDate = now.format("YYYY-MM-DD");
-  // find the current targetBG
-  const currentTargetBG = params.value?.targetBGs?.find((item) =>
-    isCurrentSetting(item, now, currentDate)
-  );
-  const currentICR = params.value?.icrs?.find((item) =>
-    isCurrentSetting(item, now, currentDate)
-  );
-  const currentISF = params.value?.isfs?.find((item) =>
-    isCurrentSetting(item, now, currentDate)
-  );
-  return {
-    targetBG: currentTargetBG?.value,
-    icr: currentICR?.value,
-    isf: currentISF?.value,
-  };
-});
 
 const canCalculate = computed(() => {
   const { targetBG, icr, isf } = currentParams.value;

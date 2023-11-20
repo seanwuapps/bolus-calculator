@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
-import { Settings } from "~/types/settings";
 import localforage from "localforage";
-import { BolusParams, BolusRecord } from "~/types/bolus";
+import { BolusParams, BolusRecord, CurrentBolusParams } from "~/types/bolus";
 import dayjs from "dayjs";
 
 /**
@@ -23,6 +22,18 @@ const getActiveInsulinRatio = (
   return Number((durationMinutes - timeSinceLastBolus) / durationMinutes);
 };
 
+const isCurrent = (
+  item: { start: string; end: string; value: string },
+  now: dayjs.Dayjs,
+  currentDate: string
+) => {
+  const start = dayjs(`${currentDate} ${item.start}`);
+  const end = dayjs(`${currentDate} ${item.end}`);
+  return (
+    start.isSame(now, "minute") || (start.isBefore(now) && end.isAfter(now))
+  );
+};
+
 const defaultParams = () => ({
   targetBGs: [],
   icrs: [],
@@ -38,6 +49,7 @@ export const useBolusStore = defineStore("bolus", {
       suggestedBolus: undefined as number | undefined,
       actualBolus: undefined as number | undefined,
       bolusHistory: undefined as BolusRecord[] | undefined,
+      paramOverrides: undefined as CurrentBolusParams | undefined,
     };
   },
   getters: {
@@ -117,6 +129,25 @@ export const useBolusStore = defineStore("bolus", {
       return this.lastBolus?.ts
         ? dayjs(this.lastBolus.ts).format("hh:mm A, DD MMM")
         : undefined;
+    },
+    currentParams(): CurrentBolusParams {
+      const now = dayjs();
+      const currentDate = now.format("YYYY-MM-DD");
+      // find the current targetBG
+      const currentTargetBG = this.params.targetBGs?.find((item) =>
+        isCurrent(item, now, currentDate)
+      );
+      const currentICR = this.params.icrs?.find((item) =>
+        isCurrent(item, now, currentDate)
+      );
+      const currentISF = this.params.isfs?.find((item) =>
+        isCurrent(item, now, currentDate)
+      );
+      return {
+        targetBG: currentTargetBG,
+        icr: currentICR,
+        isf: currentISF,
+      };
     },
   },
   actions: {

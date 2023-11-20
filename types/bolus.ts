@@ -4,16 +4,16 @@ export interface TimeBasedValue {
   value: string;
 }
 
-export interface Time {
-  hour: string;
-  minute: string;
-  ampm: string;
-}
-
 export interface BolusParams {
   targetBGs: TimeBasedValue[];
   icrs: TimeBasedValue[];
   isfs: TimeBasedValue[];
+}
+
+export interface CurrentBolusParams {
+  targetBG?: TimeBasedValue;
+  icr?: TimeBasedValue;
+  isf?: TimeBasedValue;
 }
 
 export interface BolusRecord {

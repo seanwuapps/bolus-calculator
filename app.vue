@@ -26,7 +26,7 @@
       </div>
     </GoHeaderBar>
 
-    <Dashboard />
+    <Dashboard @open-params-dialog="openBolusParamsDialog" />
 
     <GoDialog ref="bolusParamsDialog" persistent heading="Bolus Parameters">
       <BolusParamsForm @close="closeBolusParamsDialog" />
