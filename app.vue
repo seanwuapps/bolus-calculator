@@ -6,7 +6,6 @@
         <GoButton
           class="mr-2"
           @click="openCalculatorDialog"
-          round
           variant="primary"
           aria-label="Open Bolus Calculator"
         >
@@ -15,13 +14,11 @@
         </GoButton>
         <GoButton
           @click="openBolusParamsDialog"
-          icon
           outline-fill
-          round
           variant="success"
           aria-label="Bolus Parameters"
         >
-          <GoIcon name="tune" decorative />
+          <GoIcon name="tune" decorative /> Bolus Parameters
         </GoButton>
       </div>
     </GoHeaderBar>

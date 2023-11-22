@@ -110,7 +110,6 @@
         <GoButtonGroup>
           <GoButton
             block="tablet"
-            round
             variant="primary"
             v-if="hasDiff"
             @click="openQuickSaveDialog"
@@ -120,7 +119,6 @@
           <GoButton
             block="tablet"
             @click="$emit('open-params-dialog')"
-            round
             variant="success"
           >
             <span>Change Parameters</span>

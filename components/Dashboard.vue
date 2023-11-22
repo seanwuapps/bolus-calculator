@@ -66,12 +66,7 @@
           No settings found. Click the button below to configure them.
         </p>
         <div slot="footer">
-          <GoButton
-            block="all"
-            @click="openSettingsDialog"
-            round
-            variant="secondary"
-          >
+          <GoButton block="all" @click="openSettingsDialog" variant="secondary">
             <GoIcon name="settings" decorative />
             <span>Settings</span>
           </GoButton>

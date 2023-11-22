@@ -181,3 +181,9 @@ const save = () => {
   emit("close");
 };
 </script>
+
+<style>
+.ml-auto {
+  margin-left: auto;
+}
+</style>

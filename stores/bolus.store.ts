@@ -237,5 +237,11 @@ export const useBolusStore = defineStore("bolus", {
         this.isLoading = false;
       }
     },
+
+    async exportParams() {
+      const filename = "bolus-params.json";
+      const jsonStr = JSON.stringify(this.params);
+      downloadFile(filename, jsonStr);
+    },
   },
 });

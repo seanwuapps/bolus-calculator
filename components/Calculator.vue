@@ -28,6 +28,16 @@
       </GoInput>
 
       <hr />
+      <pre>{{
+        {
+          currentParams,
+          targetBG: Number(currentParams.targetBG?.value),
+          icr: Number(currentParams.icr?.value),
+          isf: Number(currentParams.isf?.value),
+          currentBG: !isNaN(Number(currentBG)),
+          currentCarbs: !isNaN(Number(currentCarbs)),
+        }
+      }}</pre>
 
       <GoButtonGroup>
         <GoButton
@@ -139,9 +149,9 @@ const { currentParams, currentBG, currentCarbs, lastBolus, actualBolus } =
 const canCalculate = computed(() => {
   const { targetBG, icr, isf } = currentParams.value;
   return (
-    !isNaN(Number(targetBG)) &&
-    !isNaN(Number(icr)) &&
-    !isNaN(Number(isf)) &&
+    !isNaN(Number(targetBG?.value)) &&
+    !isNaN(Number(icr?.value)) &&
+    !isNaN(Number(isf?.value)) &&
     !isNaN(Number(currentBG.value)) &&
     !isNaN(Number(currentCarbs.value))
   );
@@ -149,13 +159,14 @@ const canCalculate = computed(() => {
 
 const getCorrectionBolus = () => {
   const { targetBG, isf } = currentParams.value;
-  const result = (Number(currentBG.value) - Number(targetBG)) / Number(isf);
+  const result =
+    (Number(currentBG.value) - Number(targetBG?.value)) / Number(isf?.value);
   return Number(result.toFixed(2));
 };
 
 const getMealBolus = () => {
   const { icr } = currentParams.value;
-  const result = Number(currentCarbs.value) / Number(icr);
+  const result = Number(currentCarbs.value) / Number(icr?.value);
   return Number(result.toFixed(2));
 };
 
@@ -199,7 +210,7 @@ const emit = defineEmits(["close"]);
 const confirmBolus = async () => {
   // save bolus into history
   const { targetBG, icr, isf } = currentParams.value;
-  await bolusStore.saveBolus(targetBG, icr, isf);
+  await bolusStore.saveBolus(targetBG?.value, icr?.value, isf?.value);
 
   // reset display condition
   showBolusResult.value = false;
