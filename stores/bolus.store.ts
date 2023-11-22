@@ -200,6 +200,27 @@ export const useBolusStore = defineStore("bolus", {
       this.suggestedBolus = undefined;
       this.actualBolus = undefined;
     },
+    async quickSaveParams() {
+      if (!this.paramOverrides) {
+        return;
+      }
+
+      const params = { ...this.params };
+      Object.entries(this.paramOverrides).forEach(([type, override]) => {
+        params[`${type as keyof CurrentBolusParams}s`] = params[
+          `${type as keyof CurrentBolusParams}s`
+        ].map((item) => {
+          if (item.start === override.start) {
+            return override;
+          }
+          return item;
+        });
+      });
+
+      await this.saveParams(params);
+
+      await this.loadParams();
+    },
     async saveParams(params?: BolusParams) {
       const value = params ? params : this.params;
       await localforage.setItem("bolus-params", JSON.stringify(value));

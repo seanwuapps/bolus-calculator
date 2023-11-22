@@ -1,6 +1,11 @@
 <template>
   <div class="container mt-4">
-    <GoCardRow :cols-tablet="2" :cols-desktop="3" :cols-large="3">
+    <GoCardRow
+      :cols-mobile="1"
+      :cols-tablet="1"
+      :cols-desktop="3"
+      :cols-large="3"
+    >
       <GoCard heading="Insulin on board">
         <div class="text-center">
           <strong class="text-size-5">
@@ -74,133 +79,7 @@
       </GoCard>
     </GoCardRow>
 
-    <GoCardRow :cols-tablet="1" :cols-desktop="1" :cols-large="2">
-      <GoCard
-        heading="Current Bolus Parameters"
-        sub-heading="Bolus settings applicable at the moment"
-      >
-        <pre>{{ activeParams }}</pre>
-        <pre>{{ bolusStore.currentParams }}</pre>
-        <pre>{{ bolusStore.paramOverrides }}</pre>
-        <dl class="params" v-if="!!activeParams">
-          <dt>
-            <span>Target BG</span>
-          </dt>
-          <dd>
-            <div>
-              <GoButton
-                compact
-                round
-                icon
-                @click="setParamOverride('targetBG', -0.1)"
-                aria-label="Decrease 0.1"
-              >
-                <GoIcon name="remove" decorative></GoIcon>
-              </GoButton>
-              <span>
-                <strong>{{ activeParams.targetBG?.value }}</strong> mmol/L
-              </span>
-              <GoButton
-                compact
-                round
-                icon
-                @click="setParamOverride('targetBG', 0.1)"
-                aria-label="Increase 0.1"
-              >
-                <GoIcon name="add" decorative></GoIcon>
-              </GoButton>
-            </div>
-            <time>
-              {{ activeParams.targetBG?.start }} -
-              {{ activeParams.targetBG?.end }}
-            </time>
-          </dd>
-          <dt>
-            <span> Insulin Carb Ratio (ICR) </span>
-            <div style="font-weight: normal">
-              Affects "meal" bolus calculation, higher = less insulin
-            </div>
-          </dt>
-          <dd>
-            <div>
-              <GoButton
-                compact
-                round
-                icon
-                @click="setParamOverride('icr', -1, 0)"
-                aria-label="Decrease 1g"
-              >
-                <GoIcon name="remove" decorative></GoIcon>
-              </GoButton>
-              <span>
-                1u for <strong>{{ activeParams.icr?.value }}g</strong>
-              </span>
-              <GoButton
-                compact
-                round
-                icon
-                @click="setParamOverride('icr', 1, 0)"
-                aria-label="Increase 1g"
-              >
-                <GoIcon name="add" decorative></GoIcon>
-              </GoButton>
-            </div>
-            <time>
-              {{ activeParams.icr?.start }} - {{ activeParams.icr?.end }}
-            </time>
-          </dd>
-          <dt>
-            <span> Insulin Sensitivity Factor (ISF) </span>
-            <div style="font-weight: normal">
-              Affects "correction" bolus calculation, higher = less insulin
-            </div>
-          </dt>
-          <dd>
-            <div>
-              <GoButton
-                compact
-                round
-                icon
-                @click="setParamOverride('isf', -0.1)"
-                aria-label="Decrease 0.1"
-              >
-                <GoIcon name="remove" decorative></GoIcon>
-              </GoButton>
-              <span>
-                1u for <strong>{{ activeParams.isf?.value }}</strong> mmol/L
-              </span>
-              <GoButton
-                compact
-                round
-                icon
-                @click="setParamOverride('isf', 0.1)"
-                aria-label="Increase 0.1"
-              >
-                <GoIcon name="add" decorative></GoIcon>
-              </GoButton>
-            </div>
-            <time>
-              {{ activeParams.isf?.start }} - {{ activeParams.isf?.end }}
-            </time>
-          </dd>
-        </dl>
-        <div slot="footer">
-          <GoButtonGroup>
-            <GoButton block="all" round variant="primary" v-if="hasDiff">
-              <span>Quick save</span>
-            </GoButton>
-            <GoButton
-              block="all"
-              @click="$emit('open-params-dialog')"
-              round
-              variant="success"
-            >
-              <span>Change Parameters</span>
-            </GoButton>
-          </GoButtonGroup>
-        </div>
-      </GoCard>
-    </GoCardRow>
+    <BolusParamsCard />
 
     <GoDialog ref="settingsDialog" persistent heading="Settings">
       <SettingsForm @close="closeSettingsDialog" />
@@ -258,26 +137,6 @@ export default defineComponent({
         return accu + Number(curr.actualBolus);
       }, 0);
     },
-
-    activeParams() {
-      if (this.bolusStore.paramOverrides) {
-        return {
-          ...this.bolusStore.currentParams,
-          ...this.bolusStore.paramOverrides,
-        };
-      }
-      return this.bolusStore.currentParams;
-    },
-    hasDiff() {
-      const { targetBG, icr, isf } = this.activeParams;
-      const { currentParams } = this.bolusStore;
-
-      return (
-        Number(targetBG?.value) !== Number(currentParams.targetBG?.value) ||
-        Number(icr?.value) !== Number(currentParams.icr?.value) ||
-        Number(isf?.value) !== Number(currentParams.isf?.value)
-      );
-    },
   },
   async mounted() {
     const settings = await this.settingsStore.getSettings();
@@ -294,35 +153,6 @@ export default defineComponent({
     },
     closeSettingsDialog() {
       (this.$refs.settingsDialog as any).$el.close();
-    },
-    setParamOverride(
-      type: "targetBG" | "icr" | "isf",
-      amount: number,
-      decimals = 1
-    ) {
-      const currentValue = this.activeParams[type];
-
-      if (!currentValue) {
-        return;
-      }
-
-      const newValue = (Number(currentValue.value) + amount).toFixed(decimals);
-      if (!this.bolusStore.paramOverrides) {
-        this.bolusStore.paramOverrides = {
-          [type]: {
-            start: currentValue.start,
-            end: currentValue.end,
-            value: String(newValue),
-          },
-        };
-        return;
-      }
-
-      this.bolusStore.paramOverrides[type] = {
-        start: currentValue.start,
-        end: currentValue.end,
-        value: String(newValue),
-      };
     },
   },
 });
