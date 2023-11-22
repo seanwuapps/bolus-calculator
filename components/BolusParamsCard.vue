@@ -189,7 +189,7 @@ export default defineComponent({
     },
   },
   async mounted() {
-    const settings = await this.settingsStore.getSettings();
+    const settings = await this.settingsStore.loadSettings();
     if (!settings) {
       this.settingsStore.initialiseSettings();
       (this.$refs.settingsDialog as any).$el.open();

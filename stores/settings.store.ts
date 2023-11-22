@@ -17,7 +17,7 @@ export const useSettingsStore = defineStore("settings", {
     async saveSettings(settings: Settings) {
       await localforage.setItem("settings", JSON.stringify(settings));
     },
-    async getSettings() {
+    async loadSettings() {
       this.isLoading = true;
       try {
         const settings = await localforage.getItem<string>("settings");

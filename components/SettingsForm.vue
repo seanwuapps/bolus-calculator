@@ -46,8 +46,7 @@ const settingsStore = useSettingsStore();
 
 const { settings } = storeToRefs(settingsStore);
 onMounted(async () => {
-  console.log("mounted");
-  await settingsStore.getSettings();
+  await settingsStore.loadSettings();
 
   if (!settings.value) {
     settingsStore.initialiseSettings();

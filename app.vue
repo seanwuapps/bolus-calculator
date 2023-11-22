@@ -48,13 +48,14 @@ useHead({
   },
 });
 // If you want to use it in setup, import from the nuxtApp.
-const { $pwa } = useNuxtApp();
-
-onMounted(() => {
-  console.log($pwa);
-});
-
 const settingsStore = useSettingsStore();
+const bolusStore = useBolusStore();
+
+onMounted(async () => {
+  await settingsStore.loadSettings();
+  await bolusStore.loadParams();
+  await bolusStore.loadBolusHistory();
+});
 
 const bolusParamsDialog = ref(null);
 const calculatorDialog = ref(null);
