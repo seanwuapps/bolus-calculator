@@ -3,29 +3,30 @@
   <ClientOnly>
     <GoHeaderBar>
       <div slot="actions">
-        <GoButton
-          class="mr-2"
-          @click="openCalculatorDialog"
-          variant="primary"
-          aria-label="Open Bolus Calculator"
-        >
-          <GoIcon name="calculate" decorative />
-          Calculator
-        </GoButton>
-        <GoButton
-          @click="openBolusParamsDialog"
-          outline-fill
-          variant="success"
-          aria-label="Bolus Parameters"
-        >
-          <GoIcon name="tune" decorative /> Bolus Parameters
-        </GoButton>
+        <GoButtonGroup>
+          <GoButton
+            @click="openCalculatorDialog"
+            variant="primary"
+            aria-label="Open Bolus Calculator"
+            icon
+          >
+            <GoIcon name="calculate" decorative />
+          </GoButton>
+          <GoButton
+            @click="openBolusParamsDialog"
+            variant="success"
+            aria-label="Bolus Parameters"
+            icon
+          >
+            <GoIcon name="tune" decorative />
+          </GoButton>
+        </GoButtonGroup>
       </div>
     </GoHeaderBar>
 
     <Dashboard @open-params-dialog="openBolusParamsDialog" />
 
-    <GoDialog ref="bolusParamsDialog" persistent heading="Bolus Parameters">
+    <GoDialog ref="bolusParamsDialog" heading="Bolus Parameters">
       <BolusParamsForm @close="closeBolusParamsDialog" />
     </GoDialog>
 
@@ -35,7 +36,13 @@
   </ClientOnly>
 </template>
 <script setup lang="ts">
-import { GoButton, GoDialog, GoHeaderBar, GoIcon } from "@go-ui/vue";
+import {
+  GoButton,
+  GoDialog,
+  GoHeaderBar,
+  GoIcon,
+  GoButtonGroup,
+} from "@go-ui/vue";
 import { useSettingsStore } from "@/stores/settings.store";
 
 useHead({

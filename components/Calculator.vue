@@ -28,16 +28,6 @@
       </GoInput>
 
       <hr />
-      <pre>{{
-        {
-          currentParams,
-          targetBG: Number(currentParams.targetBG?.value),
-          icr: Number(currentParams.icr?.value),
-          isf: Number(currentParams.isf?.value),
-          currentBG: !isNaN(Number(currentBG)),
-          currentCarbs: !isNaN(Number(currentCarbs)),
-        }
-      }}</pre>
 
       <GoButtonGroup>
         <GoButton
