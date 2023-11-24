@@ -55,10 +55,18 @@ useHead({
 const settingsStore = useSettingsStore();
 const bolusStore = useBolusStore();
 
-onMounted(async () => {
+const load = async () => {
   await settingsStore.loadSettings();
   await bolusStore.loadParams();
   await bolusStore.loadBolusHistory();
+};
+onMounted(async () => {
+  load();
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      load();
+    }
+  });
 });
 
 const bolusParamsDialog = ref(null);
