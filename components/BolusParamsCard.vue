@@ -121,7 +121,8 @@
             @click="$emit('open-params-dialog')"
             variant="success"
           >
-            <span>Change Parameters</span>
+            <GoIcon name="tune" />
+            <span>Bolus Parameters</span>
           </GoButton>
         </GoButtonGroup>
       </div>

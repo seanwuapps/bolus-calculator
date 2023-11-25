@@ -24,7 +24,7 @@
     "vue-tsc": "^1.8.22"
   },
   "dependencies": {
-    "@go-ui/vue": "^1.30.2",
+    "@go-ui/vue": "^1.31.0",
     "dayjs": "^1.11.10",
     "localforage": "^1.10.0",
     "pinia": "^2.1.7",

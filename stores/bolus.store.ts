@@ -106,7 +106,7 @@ export const useBolusStore = defineStore("bolus", {
         );
 
         const insulinOnBoard = Number(
-          (activeInsulinRatio * bolus.actualBolus).toFixed(4)
+          (activeInsulinRatio * bolus.actualBolus).toFixed(2)
         );
 
         return {
@@ -121,9 +121,13 @@ export const useBolusStore = defineStore("bolus", {
      * sum of all active insulins
      */
     currentInsulinOnBoard(): number {
-      return this.activeInsulinRecords.reduce((accumulator, currentValue) => {
-        return accumulator + Number(currentValue.insulinOnBoard);
-      }, 0);
+      const insulinOnBoard = this.activeInsulinRecords.reduce(
+        (accumulator, currentValue) => {
+          return accumulator + Number(currentValue.insulinOnBoard);
+        },
+        0
+      );
+      return Number(insulinOnBoard.toFixed(2));
     },
     lastBolusTimeDisplay(): string | undefined {
       return this.lastBolus?.ts

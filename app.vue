@@ -61,12 +61,11 @@ const load = async () => {
   await bolusStore.loadBolusHistory();
 };
 onMounted(async () => {
-  load();
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-      load();
-    }
-  });
+  await load();
+
+  setInterval(async () => {
+    await load();
+  }, 5000);
 });
 
 const bolusParamsDialog = ref(null);

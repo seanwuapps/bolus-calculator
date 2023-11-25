@@ -6,15 +6,17 @@
       :cols-desktop="3"
       :cols-large="3"
     >
-      <GoCard heading="Insulin on board">
+      <GoCard heading="Insulin on board" :key="refreshKey">
         <div class="text-center">
           <strong class="text-size-5">
             {{ bolusStore.currentInsulinOnBoard }}
           </strong>
           <span class="text-size-3"> u</span>
           <p>
-            Out of the {{ bolusStore.activeInsulinRecords.length }} boluses in
-            the last {{ settings?.insulinDuration }} hours
+            Out of the {{ bolusStore.activeInsulinRecords.length }} bolus{{
+              bolusStore.activeInsulinRecords.length === 1 ? "" : "es"
+            }}
+            in the last {{ settings?.insulinDuration }} hours
           </p>
         </div>
 
@@ -25,7 +27,7 @@
           />
         </div>
 
-        <div class="text-center" slot="footer">
+        <div class="text-center text-size-1" slot="footer">
           Insulin on board last until
           <div>
             <strong>{{ insulinLastTill }}</strong>
@@ -35,10 +37,9 @@
 
       <GoCard
         heading="Last Bolus"
-        v-if="bolusStore.lastBolus"
         :sub-heading="bolusStore.lastBolusTimeDisplay"
       >
-        <dl>
+        <dl v-if="bolusStore.lastBolus">
           <dt class="mr-2">Glucose</dt>
           <dd>{{ bolusStore.lastBolus.bg }} mmol/L</dd>
           <dt class="mr-2">Meal Carbs</dt>
@@ -52,6 +53,7 @@
             >
           </dd>
         </dl>
+        <p v-else>No bolus recorded.</p>
       </GoCard>
       <GoCard heading="Settings">
         <dl v-if="!!settings">
@@ -74,7 +76,7 @@
       </GoCard>
     </GoCardRow>
 
-    <BolusParamsCard />
+    <BolusParamsCard @open-params-dialog="$emit('open-params-dialog')" />
 
     <GoDialog ref="settingsDialog" persistent heading="Settings">
       <SettingsForm @close="closeSettingsDialog" />
@@ -111,6 +113,11 @@ export default defineComponent({
     return {
       bolusStore,
       settingsStore,
+    };
+  },
+  data() {
+    return {
+      refreshKey: 0,
     };
   },
   computed: {
