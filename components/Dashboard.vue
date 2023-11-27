@@ -19,7 +19,6 @@
             in the last {{ settings?.insulinDuration }} hours
           </p>
         </div>
-
         <div class="text-center" v-if="totalAffectiveBolus">
           <GoProgress
             :value="bolusStore.currentInsulinOnBoard"

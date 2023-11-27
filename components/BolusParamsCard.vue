@@ -146,9 +146,9 @@ import {
   GoIcon,
   GoButtonGroup,
 } from "@go-ui/vue";
-import dayjs from "dayjs";
 
 export default defineComponent({
+  emits: ["open-params-dialog"],
   setup() {
     const settingsStore = useSettingsStore();
     const bolusStore = useBolusStore();
@@ -235,5 +235,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped></style>
