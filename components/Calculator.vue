@@ -226,7 +226,7 @@ const adjustBolus = (val: number) => {
     actualBolus.value = 0;
   }
   actualBolus.value = Number(actualBolus.value) + Number(val);
-  navigator.vibrate([250]);
+  navigator.vibrate([150]);
 };
 </script>
 
