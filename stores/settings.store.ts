@@ -33,7 +33,6 @@ export const useSettingsStore = defineStore("settings", {
         maxBolus: "",
         insulinDuration: "",
       };
-      console.log("asdf", this.settings);
     },
   },
 });

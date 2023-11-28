@@ -6,7 +6,7 @@
       :cols-desktop="3"
       :cols-large="3"
     >
-      <GoCard heading="Insulin on board" :key="refreshKey">
+      <GoCard heading="Insulin on board">
         <div class="text-center">
           <strong class="text-size-5">
             {{ bolusStore.currentInsulinOnBoard }}
@@ -67,7 +67,11 @@
           No settings found. Click the button below to configure them.
         </p>
         <div slot="footer">
-          <GoButton block="all" @click="openSettingsDialog" variant="secondary">
+          <GoButton
+            block="all"
+            @click="$emit('open-settings')"
+            variant="secondary"
+          >
             <GoIcon name="settings" decorative />
             <span>Settings</span>
           </GoButton>
@@ -76,10 +80,6 @@
     </GoCardRow>
 
     <BolusParamsCard @open-params-dialog="$emit('open-params-dialog')" />
-
-    <GoDialog ref="settingsDialog" persistent heading="Settings">
-      <SettingsForm @close="closeSettingsDialog" />
-    </GoDialog>
   </div>
 </template>
 
@@ -106,17 +106,13 @@ export default defineComponent({
     GoIcon,
     GoButtonGroup,
   },
+  emits: ["open-settings", "open-params-dialog"],
   setup() {
     const settingsStore = useSettingsStore();
     const bolusStore = useBolusStore();
     return {
       bolusStore,
       settingsStore,
-    };
-  },
-  data() {
-    return {
-      refreshKey: 0,
     };
   },
   computed: {
@@ -141,20 +137,6 @@ export default defineComponent({
   },
   async mounted() {
     const settings = await this.settingsStore.loadSettings();
-    if (!settings) {
-      this.settingsStore.initialiseSettings();
-      (this.$refs.settingsDialog as any).$el.open();
-    }
-
-    await this.bolusStore.loadBolusHistory();
-  },
-  methods: {
-    openSettingsDialog() {
-      (this.$refs.settingsDialog as any).$el.open();
-    },
-    closeSettingsDialog() {
-      (this.$refs.settingsDialog as any).$el.close();
-    },
   },
 });
 </script>

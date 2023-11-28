@@ -34,7 +34,7 @@ const isCurrent = (
   );
 };
 
-const defaultParams = () => ({
+export const defaultParams = () => ({
   targetBGs: [],
   icrs: [],
   isfs: [],

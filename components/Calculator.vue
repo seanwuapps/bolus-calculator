@@ -128,7 +128,6 @@ import {
   GoAccordion,
   GoAccordionItem,
 } from "@go-ui/vue";
-import dayjs from "dayjs";
 
 const settingsStore = useSettingsStore();
 const bolusStore = useBolusStore();
@@ -204,6 +203,11 @@ const confirmBolus = async () => {
 
   // reset display condition
   showBolusResult.value = false;
+
+  navigator.vibrate([300]);
+
+  const audio = new Audio("/confirm.mp3");
+  audio.play();
 
   // close dialog
   emit("close");

@@ -24,7 +24,15 @@
       </div>
     </GoHeaderBar>
 
-    <Dashboard @open-params-dialog="openBolusParamsDialog" />
+    <GoOverlay v-if="globalLoading">
+      <GoSpinner></GoSpinner>
+    </GoOverlay>
+
+    <Dashboard
+      v-else
+      @open-params-dialog="openBolusParamsDialog"
+      @open-settings="openSettingsDialog"
+    />
 
     <GoDialog ref="bolusParamsDialog" heading="Bolus Parameters">
       <BolusParamsForm @close="closeBolusParamsDialog" />
@@ -32,6 +40,10 @@
 
     <GoDialog ref="calculatorDialog" persistent heading="Bolus Calculator">
       <Calculator @close="closeCalculatorDialog" />
+    </GoDialog>
+
+    <GoDialog ref="settingsDialog" persistent heading="Settings">
+      <SettingsForm @close="closeSettingsDialog" />
     </GoDialog>
   </ClientOnly>
 </template>
@@ -42,8 +54,12 @@ import {
   GoHeaderBar,
   GoIcon,
   GoButtonGroup,
+  GoSpinner,
+  GoOverlay,
 } from "@go-ui/vue";
 import { useSettingsStore } from "@/stores/settings.store";
+import { defaultParams, useBolusStore } from "@/stores/bolus.store";
+import { isEqual } from "lodash-es";
 
 useHead({
   htmlAttrs: {
@@ -54,22 +70,43 @@ useHead({
 // If you want to use it in setup, import from the nuxtApp.
 const settingsStore = useSettingsStore();
 const bolusStore = useBolusStore();
+const globalLoading = ref(true);
+
+const { settings } = storeToRefs(settingsStore);
+const { params } = storeToRefs(bolusStore);
 
 const load = async () => {
-  await settingsStore.loadSettings();
-  await bolusStore.loadParams();
-  await bolusStore.loadBolusHistory();
+  globalLoading.value = true;
+  try {
+    await settingsStore.loadSettings();
+    await bolusStore.loadParams();
+    await bolusStore.loadBolusHistory();
+  } finally {
+    globalLoading.value = false;
+  }
 };
 onMounted(async () => {
   await load();
+});
 
-  setInterval(async () => {
-    await load();
-  }, 5000);
+watchEffect(() => {
+  if (!globalLoading.value) {
+    if (!settings.value) {
+      settingsStore.initialiseSettings();
+      openSettingsDialog();
+      return;
+    }
+
+    if (isEqual(params.value, defaultParams())) {
+      openBolusParamsDialog();
+      return;
+    }
+  }
 });
 
 const bolusParamsDialog = ref(null);
 const calculatorDialog = ref(null);
+const settingsDialog = ref(null);
 
 const openBolusParamsDialog = () => {
   (bolusParamsDialog.value as any).$el.open();
@@ -83,5 +120,12 @@ const closeBolusParamsDialog = () => {
 };
 const closeCalculatorDialog = () => {
   (calculatorDialog.value as any).$el.close();
+};
+
+const openSettingsDialog = () => {
+  (settingsDialog.value as any).$el.open();
+};
+const closeSettingsDialog = () => {
+  (settingsDialog.value as any).$el.close();
 };
 </script>
