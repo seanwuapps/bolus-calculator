@@ -204,7 +204,7 @@ const confirmBolus = async () => {
   // reset display condition
   showBolusResult.value = false;
 
-  navigator.vibrate([500]);
+  navigator.vibrate([750]);
 
   const audio = new Audio("/confirm.mp3");
   audio.play();
@@ -226,7 +226,7 @@ const adjustBolus = (val: number) => {
     actualBolus.value = 0;
   }
   actualBolus.value = Number(actualBolus.value) + Number(val);
-  navigator.vibrate([100]);
+  navigator.vibrate([250]);
 };
 </script>
 
