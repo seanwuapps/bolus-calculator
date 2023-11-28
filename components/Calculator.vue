@@ -55,7 +55,7 @@
           <GoButton
             variant="success"
             icon
-            @click="actualBolus--"
+            @click="adjustBolus(-1)"
             aria-label="Decrease 1 unit"
           >
             <GoIcon name="remove" decorative></GoIcon>
@@ -66,7 +66,7 @@
           <GoButton
             variant="critical"
             icon
-            @click="actualBolus++"
+            @click="adjustBolus(1)"
             aria-label="Increase 1 unit"
           >
             <GoIcon name="add" decorative></GoIcon>
@@ -204,7 +204,7 @@ const confirmBolus = async () => {
   // reset display condition
   showBolusResult.value = false;
 
-  navigator.vibrate([300]);
+  navigator.vibrate([500]);
 
   const audio = new Audio("/confirm.mp3");
   audio.play();
@@ -220,6 +220,14 @@ const isOverMaxSuggestion = computed(() => {
 
   return actualBolus.value > Number(settings.value.maxBolus);
 });
+
+const adjustBolus = (val: number) => {
+  if (!actualBolus.value) {
+    actualBolus.value = 0;
+  }
+  actualBolus.value = Number(actualBolus.value) + Number(val);
+  navigator.vibrate([100]);
+};
 </script>
 
 <style lang="scss">
