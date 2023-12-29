@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   typescript: {
     typeCheck: true,
   },
-  modules: ["@pinia/nuxt", "@vite-pwa/nuxt"],
+  modules: ["@pinia/nuxt", "@vite-pwa/nuxt", "@nuxtjs/supabase"],
   pwa: {
     registerType: "autoUpdate",
     manifest: {

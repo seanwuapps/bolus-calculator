@@ -1,6 +1,7 @@
 <template>
   <GoCardRow :cols-tablet="1" :cols-desktop="1" :cols-large="1">
     <GoCard
+      border
       heading="Current Bolus Parameters"
       sub-heading="Bolus settings applicable currently"
     >
@@ -120,8 +121,9 @@
             block="tablet"
             @click="$emit('open-params-dialog')"
             variant="success"
+            round
           >
-            <GoIcon name="tune" />
+            <GoIcon name="tune" decorative slot="prefix" />
             <span>Bolus Parameters</span>
           </GoButton>
         </GoButtonGroup>
