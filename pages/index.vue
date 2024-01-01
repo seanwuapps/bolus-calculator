@@ -35,9 +35,6 @@ import { GoDialog, GoSpinner, GoOverlay } from "@go-ui/vue";
 import { useSettingsStore } from "@/stores/settings.store";
 import { defaultParams, useBolusStore } from "@/stores/bolus.store";
 import { isEqual } from "lodash-es";
-definePageMeta({
-  middleware: "auth",
-});
 
 const user = useSupabaseUser();
 

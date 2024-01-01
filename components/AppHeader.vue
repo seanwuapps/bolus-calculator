@@ -4,7 +4,7 @@
       <GoButtonGroup>
         <GoButton
           @click="$emit('openCalculatorDialog')"
-          variant="text"
+          variant="primary"
           flat
           icon
           round
@@ -13,7 +13,7 @@
           <GoIcon name="calculate" decorative />
         </GoButton>
         <GoButton
-          variant="text"
+          variant="secondary"
           flat
           round
           icon
@@ -24,7 +24,7 @@
         </GoButton>
 
         <GoButton
-          variant="text"
+          variant="success"
           flat
           round
           icon
@@ -34,27 +34,113 @@
           <GoIcon name="tune" decorative />
         </GoButton>
         <GoButton
+          v-if="user"
           id="dd-trigger"
-          variant="text"
+          variant="secondary"
           flat
-          aria-label="Bolus Parameters"
+          aria-label="User menu"
           icon
           round
+          outline-fill
         >
           <GoIcon name="person" decorative />
         </GoButton>
+        <GoButton
+          v-else
+          variant="primary"
+          flat
+          aria-label="Log in"
+          icon
+          round
+          outline-fill
+          @click="openLoginModal"
+        >
+          <GoIcon name="login" decorative />
+        </GoButton>
       </GoButtonGroup>
 
-      <!-- <GoDropdownMenu id="dd" trigger-selector="#dd-trigger" width="12rem">
-          <GoDropdownSeparator></GoDropdownSeparator>
-          <GoDropdownItem>
-            <GoIcon name="logout" decorative />
-            Log out</GoDropdownItem
-          >
-        </GoDropdownMenu> -->
+      <GoDropdownMenu
+        v-if="user"
+        id="dd"
+        trigger-selector="#dd-trigger"
+        width="20rem"
+        persistent
+      >
+        <div role="menuitem">
+          <GoSwitch
+            role="menuitem"
+            label="Automatic sync data"
+            show-on-off
+            full-width
+            v-model="syncStore.alwaysSync"
+          />
+        </div>
+        <GoDropdownItem @click="openSyncDataDialog">
+          <GoIcon name="backup" decorative /> Backup data
+        </GoDropdownItem>
+        <GoDropdownSeparator></GoDropdownSeparator>
+        <GoDropdownItem @click="signout">
+          <GoIcon name="logout" decorative />
+          Log out</GoDropdownItem
+        >
+      </GoDropdownMenu>
     </div>
   </GoHeaderBar>
+  <GoDialog ref="loginDialogRef" heading="Login">
+    <LoginForm />
+  </GoDialog>
+  <GoDialog ref="dataSyncDialogRef" heading="Sync data">
+    <SyncDataForm class="pt-2" />
+  </GoDialog>
 </template>
 <script lang="ts" setup>
-import { GoButton, GoHeaderBar, GoIcon, GoButtonGroup } from "@go-ui/vue";
+import {
+  GoButton,
+  GoHeaderBar,
+  GoIcon,
+  GoButtonGroup,
+  GoDropdownMenu,
+  GoDropdownSeparator,
+  GoDropdownItem,
+  GoDialog,
+  GoSwitch,
+} from "@go-ui/vue";
+
+const user = useSupabaseUser();
+const supabase = useSupabaseClient();
+
+const syncStore = useSyncStore();
+
+const loginDialogRef = ref(null);
+const dataSyncDialogRef = ref(null);
+
+const openLoginModal = () => {
+  (loginDialogRef.value as any).$el.open();
+};
+
+const openSyncDataDialog = () => {
+  (dataSyncDialogRef.value as any).$el.open();
+};
+
+const signout = async () => {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+defineEmits([
+  "openCalculatorDialog",
+  "openSettingsDialog",
+  "openBolusParamsDialog",
+]);
+
+const alwaysSync = ref(false);
 </script>
+<style>
+.custom-item {
+  padding: var(--dd-item-padding);
+}
+</style>
