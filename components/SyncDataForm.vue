@@ -1,27 +1,30 @@
 <template>
   <div>
-    <p class="mb-2">
-      Data last synced at
-      <strong>
-        {{ syncStore.lastSyncTs || "N/A" }}
-      </strong>
-    </p>
-    <div>
-      <GoSwitch
-        v-model="syncStore.alwaysSync"
-        label="Automatic sync data"
-        show-on-off
-      />
+    <div class="mb-2">
+      <GoSwitch label="Automatic sync data" show-on-off />
     </div>
-    <div class="mt-2 mb-2">
-      <GoButton variant="primary" block="all" @click="syncStore.syncData">
-        Back up my data
+
+    <!-- <div class="mb-2">
+      <GoButton variant="primary" @click="syncStore.syncData">
+        Sync all now
       </GoButton>
+    </div> -->
+    <div class="mb-2">
+      <GoButton variant="secondary"> Sync settings </GoButton>
+      <Timestamp :ts="settingsStore.lastSync" />
+    </div>
+
+    <div class="mb-2">
+      <GoButton variant="success"> Sync bolus parameters </GoButton>
+    </div>
+
+    <div class="mb-2">
+      <GoButton variant="primary"> Sync bolus records </GoButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { GoButton, GoSwitch } from "@go-ui/vue";
-const syncStore = useSyncStore();
+const settingsStore = useSettingsStore();
 </script>

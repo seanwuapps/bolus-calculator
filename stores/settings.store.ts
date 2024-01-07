@@ -7,6 +7,7 @@ export const useSettingsStore = defineStore("settings", {
     return {
       isLoading: false,
       settings: null as Settings | null,
+      lastSync: null as Date | null,
     };
   },
   actions: {
@@ -34,5 +35,17 @@ export const useSettingsStore = defineStore("settings", {
         insulinDuration: "",
       };
     },
+    async sync() {
+      const user = useSupabaseUser();
+      if (!user.value) {
+        return;
+      }
+      console.log(user.value.id);
+
+      this.lastSync = new Date();
+    },
+  },
+  persist: {
+    storage: persistedState.localStorage,
   },
 });

@@ -66,15 +66,6 @@
         width="20rem"
         persistent
       >
-        <div role="menuitem">
-          <GoSwitch
-            role="menuitem"
-            label="Automatic sync data"
-            show-on-off
-            full-width
-            v-model="syncStore.alwaysSync"
-          />
-        </div>
         <GoDropdownItem @click="openSyncDataDialog">
           <GoIcon name="backup" decorative /> Backup data
         </GoDropdownItem>
@@ -109,8 +100,6 @@ import {
 const user = useSupabaseUser();
 const supabase = useSupabaseClient();
 
-const syncStore = useSyncStore();
-
 const loginDialogRef = ref(null);
 const dataSyncDialogRef = ref(null);
 
@@ -136,8 +125,6 @@ defineEmits([
   "openSettingsDialog",
   "openBolusParamsDialog",
 ]);
-
-const alwaysSync = ref(false);
 </script>
 <style>
 .custom-item {
