@@ -7,6 +7,7 @@
         hint="Minimum glucose level to be considered for calculation"
         type="number"
         v-model="settings.minBG"
+        step="0.1"
       >
         <div slot="suffix">mmol/L</div>
       </GoInput>
@@ -46,8 +47,6 @@ const settingsStore = useSettingsStore();
 
 const { settings } = storeToRefs(settingsStore);
 onMounted(async () => {
-  await settingsStore.loadSettings();
-
   if (!settings.value) {
     settingsStore.initialiseSettings();
   }

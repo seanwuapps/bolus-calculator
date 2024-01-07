@@ -149,9 +149,6 @@ export default defineComponent({
       }, 0);
     },
   },
-  async mounted() {
-    const settings = await this.settingsStore.loadSettings();
-  },
 });
 </script>
 

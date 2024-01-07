@@ -1,16 +1,18 @@
 <template>
   <div>
-    <div class="mb-2">
-      <GoSwitch label="Automatic sync data" show-on-off />
-    </div>
-
     <!-- <div class="mb-2">
       <GoButton variant="primary" @click="syncStore.syncData">
         Sync all now
       </GoButton>
     </div> -->
     <div class="mb-2">
-      <GoButton variant="secondary"> Sync settings </GoButton>
+      <GoButton
+        @click="settingsStore.sync"
+        :loading="settingsStore.isSyncing"
+        variant="secondary"
+      >
+        Sync settings
+      </GoButton>
       <Timestamp :ts="settingsStore.lastSync" />
     </div>
 
