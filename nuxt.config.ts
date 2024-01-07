@@ -11,7 +11,10 @@ export default defineNuxtConfig({
       ],
     },
   },
-  css: ["@go-ui/vue/dist/go-ui.css"],
+  css: [
+    "@go-ui/vue/dist/go-ui.css",
+    "material-design-icons-iconfont/dist/material-design-icons.css",
+  ],
   typescript: {
     typeCheck: true,
   },
@@ -20,6 +23,7 @@ export default defineNuxtConfig({
     "@vite-pwa/nuxt",
     "@nuxtjs/supabase",
     "@pinia-plugin-persistedstate/nuxt",
+    "@nuxtjs/google-fonts",
   ],
   supabase: {
     redirect: false,
@@ -60,6 +64,11 @@ export default defineNuxtConfig({
           purpose: "maskable",
         },
       ],
+    },
+  },
+  googleFonts: {
+    families: {
+      Montserrat: true,
     },
   },
 });

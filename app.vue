@@ -8,3 +8,8 @@
 <script lang="ts" setup>
 import { GoDarkMode } from "@go-ui/vue";
 </script>
+<style lang="scss">
+:root {
+  --go-heading-font-family: "Montserrat", sans-serif;
+}
+</style>
