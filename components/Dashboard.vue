@@ -6,7 +6,7 @@
       :cols-desktop="3"
       :cols-large="3"
     >
-      <GoCard heading="Insulin on board">
+      <GoCard border heading="Insulin on board">
         <div class="text-center">
           <strong class="text-size-5">
             {{ bolusStore.currentInsulinOnBoard }}
@@ -26,15 +26,28 @@
           />
         </div>
 
-        <div class="text-center text-size-1" slot="footer">
-          Insulin on board last until
-          <div>
-            <strong>{{ insulinLastTill }}</strong>
+        <div class="text-center" slot="footer">
+          <div v-if="totalAffectiveBolus">
+            Insulin on board last until
+            <div class="text-size-1">
+              <strong>{{ insulinLastTill }}</strong>
+            </div>
           </div>
+          <GoButton
+            class="mt-2"
+            block="all"
+            variant="primary"
+            round
+            @click="$emit('openCalculatorDialog')"
+          >
+            <GoIcon name="calculate" decorative slot="prefix"></GoIcon>
+            Calculate Suggested Bolus
+          </GoButton>
         </div>
       </GoCard>
 
       <GoCard
+        border
         heading="Last Bolus"
         :sub-heading="bolusStore.lastBolusTimeDisplay"
       >
@@ -54,7 +67,7 @@
         </dl>
         <p v-else>No bolus recorded.</p>
       </GoCard>
-      <GoCard heading="Settings">
+      <GoCard border heading="Settings">
         <dl v-if="!!settings">
           <dt class="mr-2">Min. glucose for calculation</dt>
           <dd>{{ settings.minBG }} mmol/L</dd>
@@ -71,8 +84,9 @@
             block="all"
             @click="$emit('open-settings')"
             variant="secondary"
+            round
           >
-            <GoIcon name="settings" decorative />
+            <GoIcon name="settings" decorative slot="prefix" />
             <span>Settings</span>
           </GoButton>
         </div>
@@ -106,7 +120,7 @@ export default defineComponent({
     GoIcon,
     GoButtonGroup,
   },
-  emits: ["open-settings", "open-params-dialog"],
+  emits: ["open-settings", "open-params-dialog", "openCalculatorDialog"],
   setup() {
     const settingsStore = useSettingsStore();
     const bolusStore = useBolusStore();
@@ -134,9 +148,6 @@ export default defineComponent({
         return accu + Number(curr.actualBolus);
       }, 0);
     },
-  },
-  async mounted() {
-    const settings = await this.settingsStore.loadSettings();
   },
 });
 </script>

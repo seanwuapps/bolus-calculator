@@ -1,131 +1,15 @@
 <template>
   <VitePwaManifest />
   <ClientOnly>
-    <GoHeaderBar>
-      <div slot="actions">
-        <GoButtonGroup>
-          <GoButton
-            @click="openCalculatorDialog"
-            variant="primary"
-            aria-label="Open Bolus Calculator"
-            icon
-          >
-            <GoIcon name="calculate" decorative />
-          </GoButton>
-          <GoButton
-            @click="openBolusParamsDialog"
-            variant="success"
-            aria-label="Bolus Parameters"
-            icon
-          >
-            <GoIcon name="tune" decorative />
-          </GoButton>
-        </GoButtonGroup>
-      </div>
-    </GoHeaderBar>
-
-    <GoOverlay v-if="globalLoading">
-      <GoSpinner></GoSpinner>
-    </GoOverlay>
-
-    <Dashboard
-      v-else
-      @open-params-dialog="openBolusParamsDialog"
-      @open-settings="openSettingsDialog"
-    />
-
-    <GoDialog ref="bolusParamsDialog" heading="Bolus Parameters">
-      <BolusParamsForm @close="closeBolusParamsDialog" />
-    </GoDialog>
-
-    <GoDialog ref="calculatorDialog" persistent heading="Bolus Calculator">
-      <Calculator @close="closeCalculatorDialog" />
-    </GoDialog>
-
-    <GoDialog ref="settingsDialog" persistent heading="Settings">
-      <SettingsForm @close="closeSettingsDialog" />
-    </GoDialog>
+    <GoDarkMode />
   </ClientOnly>
+  <NuxtPage />
 </template>
-<script setup lang="ts">
-import {
-  GoButton,
-  GoDialog,
-  GoHeaderBar,
-  GoIcon,
-  GoButtonGroup,
-  GoSpinner,
-  GoOverlay,
-} from "@go-ui/vue";
-import { useSettingsStore } from "@/stores/settings.store";
-import { defaultParams, useBolusStore } from "@/stores/bolus.store";
-import { isEqual } from "lodash-es";
-
-useHead({
-  htmlAttrs: {
-    lang: "en",
-    "data-theme": "light",
-  },
-});
-// If you want to use it in setup, import from the nuxtApp.
-const settingsStore = useSettingsStore();
-const bolusStore = useBolusStore();
-const globalLoading = ref(true);
-
-const { settings } = storeToRefs(settingsStore);
-const { params } = storeToRefs(bolusStore);
-
-const load = async () => {
-  globalLoading.value = true;
-  try {
-    await settingsStore.loadSettings();
-    await bolusStore.loadParams();
-    await bolusStore.loadBolusHistory();
-  } finally {
-    globalLoading.value = false;
-  }
-};
-onMounted(async () => {
-  await load();
-});
-
-watchEffect(() => {
-  if (!globalLoading.value) {
-    if (!settings.value) {
-      settingsStore.initialiseSettings();
-      openSettingsDialog();
-      return;
-    }
-
-    if (isEqual(params.value, defaultParams())) {
-      openBolusParamsDialog();
-      return;
-    }
-  }
-});
-
-const bolusParamsDialog = ref(null);
-const calculatorDialog = ref(null);
-const settingsDialog = ref(null);
-
-const openBolusParamsDialog = () => {
-  (bolusParamsDialog.value as any).$el.open();
-};
-const openCalculatorDialog = () => {
-  (calculatorDialog.value as any).$el.open();
-};
-
-const closeBolusParamsDialog = () => {
-  (bolusParamsDialog.value as any).$el.close();
-};
-const closeCalculatorDialog = () => {
-  (calculatorDialog.value as any).$el.close();
-};
-
-const openSettingsDialog = () => {
-  (settingsDialog.value as any).$el.open();
-};
-const closeSettingsDialog = () => {
-  (settingsDialog.value as any).$el.close();
-};
+<script lang="ts" setup>
+import { GoDarkMode } from "@go-ui/vue";
 </script>
+<style lang="scss">
+:root {
+  --go-heading-font-family: "Raleway", sans-serif;
+}
+</style>
