@@ -50,6 +50,8 @@ export const useBolusStore = defineStore("bolus", {
       actualBolus: undefined as number | undefined,
       bolusHistory: undefined as BolusRecord[] | undefined,
       paramOverrides: undefined as CurrentBolusParams | undefined,
+      isSyncing: false,
+      lastParamsSync: null as Date | null,
     };
   },
   getters: {
@@ -209,7 +211,7 @@ export const useBolusStore = defineStore("bolus", {
         return;
       }
 
-      const params = { ...this.params };
+      let params = { ...this.params };
       Object.entries(this.paramOverrides).forEach(([type, override]) => {
         params[`${type as keyof CurrentBolusParams}s`] = params[
           `${type as keyof CurrentBolusParams}s`
@@ -220,22 +222,37 @@ export const useBolusStore = defineStore("bolus", {
           return item;
         });
       });
-
+      console.log({ params });
       await this.saveParams(params);
 
       await this.loadParams();
     },
     async saveParams(params?: BolusParams) {
       const value = params ? params : this.params;
+      this.params = value;
+
       await localforage.setItem("bolus-params", JSON.stringify(value));
+      const user = useSupabaseUser();
+      if (user.value) {
+        await this.syncParams();
+      }
     },
     async loadParams() {
       this.isLoading = true;
       try {
         const params = await localforage.getItem<string>("bolus-params");
-        this.params = params
+        let temp = params
           ? (JSON.parse(params) as BolusParams)
           : defaultParams();
+
+        const user = useSupabaseUser();
+
+        if (user.value) {
+          const params = await this.fetchParams();
+          temp = params.data ? params.data : temp;
+        }
+
+        this.params = temp;
         return this.params;
       } finally {
         this.isLoading = false;
@@ -246,6 +263,61 @@ export const useBolusStore = defineStore("bolus", {
       const filename = "bolus-params.json";
       const jsonStr = JSON.stringify(this.params);
       downloadFile(filename, jsonStr);
+    },
+
+    async fetchParams(): Promise<any> {
+      const user = useSupabaseUser();
+      if (!user.value) {
+        return null;
+      }
+      const client = useSupabaseClient();
+      // fetch user settings from settings table
+      const { data, error } = await client
+        .from("bolus_params")
+        .select()
+        .eq("user_id", user.value.id)
+        .order("id")
+        .limit(1)
+        .single();
+      return data;
+    },
+    async syncParams() {
+      this.isSyncing = true;
+
+      const user = useSupabaseUser();
+      if (!user.value) {
+        return;
+      }
+      try {
+        console.log(user.value.id);
+        const supabase = useSupabaseClient();
+        const params = await this.fetchParams();
+        console.log(params);
+        //@ts-ignore
+        const { data, error } = await supabase
+          .from("bolus_params")
+          .upsert({
+            id: params?.id ? params.id : undefined,
+            user_id: user.value.id,
+            data: this.params,
+            last_sync_at: new Date(),
+          })
+          .select()
+          .limit(1)
+          .single();
+        console.log(data);
+        if (error) {
+          throw new Error(error.message);
+          return;
+        }
+
+        //@ts-ignore
+        this.lastParamsSync = dayjs(data.last_sync_at).toDate();
+      } catch (e) {
+        console.log(e);
+      } finally {
+        this.isSyncing = false;
+      }
     },
   },
 });

@@ -1,6 +1,6 @@
 <template>
   <p class="mb-2">
-    Data last synced at
+    Last synced at
     <strong>
       {{ formattedTs }}
     </strong>

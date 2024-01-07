@@ -157,10 +157,6 @@ const targetBGs = computed(() => params.value?.targetBGs || []);
 const icrs = computed(() => params.value?.icrs || []);
 const isfs = computed(() => params.value?.isfs || []);
 
-onMounted(async () => {
-  await bolusStore.loadParams();
-});
-
 const addNew = (type: "targetBGs" | "icrs" | "isfs") => {
   console.log(params.value);
   if (!params.value) {
