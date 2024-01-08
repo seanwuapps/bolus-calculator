@@ -3,6 +3,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     head: {
+      htmlAttrs: {
+        lang: "en",
+      },
+      title: "Bolus calculator",
       link: [
         {
           rel: "stylesheet",
