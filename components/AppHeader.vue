@@ -94,7 +94,6 @@ import {
   GoDropdownSeparator,
   GoDropdownItem,
   GoDialog,
-  GoSwitch,
 } from "@go-ui/vue";
 
 const user = useSupabaseUser();

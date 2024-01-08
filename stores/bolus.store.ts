@@ -240,18 +240,20 @@ export const useBolusStore = defineStore("bolus", {
     async loadParams() {
       this.isLoading = true;
       try {
-        const params = await localforage.getItem<string>("bolus-params");
-        let temp = params
-          ? (JSON.parse(params) as BolusParams)
-          : defaultParams();
-
+        const localParams = await localforage.getItem<string>("bolus-params");
+        let temp = localParams
+          ? (JSON.parse(localParams) as BolusParams)
+          : null;
         const user = useSupabaseUser();
 
         if (user.value) {
           const params = await this.fetchParams();
-          temp = params.data ? params.data : temp;
+          temp = params?.data ? params.data : temp;
         }
 
+        if (!temp) {
+          temp = defaultParams();
+        }
         this.params = temp;
         return this.params;
       } finally {

@@ -1,5 +1,18 @@
 <template>
   <div>
+    <GoDarkMode
+      ref="themer"
+      @themechange="(e) => (currentTheme = e.detail.theme)"
+    />
+    <GoSwitch
+      :checked="currentTheme === 'dark'"
+      label="Dark Mode"
+      @change="onThemeChange"
+      full-width
+      show-on-off
+      slot="logo"
+    ></GoSwitch>
+
     <!-- settings form -->
     <form v-if="settings">
       <GoInput
@@ -40,7 +53,13 @@
 </template>
 
 <script setup lang="ts">
-import { GoButton, GoButtonGroup, GoInput } from "@go-ui/vue";
+import {
+  GoButton,
+  GoButtonGroup,
+  GoInput,
+  GoSwitch,
+  GoDarkMode,
+} from "@go-ui/vue";
 import { useSettingsStore } from "@/stores/settings.store";
 const emit = defineEmits(["close"]);
 const settingsStore = useSettingsStore();
@@ -57,5 +76,14 @@ const saveSettings = () => {
     settingsStore.saveSettings(settings.value);
     emit("close");
   }
+};
+
+const currentTheme = ref("light");
+
+const themer = ref(null);
+
+const onThemeChange = (e: Event) => {
+  const isDark = (e.target as HTMLInputElement).checked;
+  (themer.value as any).$el.setTheme(isDark ? "dark" : "light");
 };
 </script>
