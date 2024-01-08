@@ -36,14 +36,16 @@ import { useSettingsStore } from "@/stores/settings.store";
 import { defaultParams, useBolusStore } from "@/stores/bolus.store";
 import { isEqual } from "lodash-es";
 
+useSeoMeta({
+  title: "Bolus calculator",
+  ogTitle: "Bolus calculator",
+  description: "A simple bolus calculator app",
+  ogDescription: "A simple bolus calculator app",
+  themeColor: "#5c5adc",
+});
+
 const user = useSupabaseUser();
 
-useHead({
-  htmlAttrs: {
-    lang: "en",
-    "data-theme": "light",
-  },
-});
 // If you want to use it in setup, import from the nuxtApp.
 const settingsStore = useSettingsStore();
 const bolusStore = useBolusStore();
