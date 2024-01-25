@@ -55,7 +55,7 @@
                 @click="$emit('openCalculatorDialog')"
               >
                 <GoIcon name="calculate" decorative slot="prefix"></GoIcon>
-                Calculate Suggested Bolus
+                Calculate Bolus
               </GoButton>
             </GoButtonGroup>
           </div>
