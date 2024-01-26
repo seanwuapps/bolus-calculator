@@ -203,6 +203,9 @@ const confirmBolus = async () => {
 
   // reset display condition
   showBolusResult.value = false;
+  // clear inputs
+  currentBG.value = undefined;
+  currentCarbs.value = undefined;
 
   navigator.vibrate([750]);
 
