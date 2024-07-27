@@ -2,12 +2,6 @@
   <li class="param">
     <span class="label">
       <span class="label-text">{{ label }}</span>
-      <time>
-        <strong>Time:</strong>
-        {{ timeStart }} -
-        {{ timeEnd }}
-      </time>
-      <p v-if="description">{{ description }}</p>
     </span>
     <span class="value">
       <template v-if="editable">
@@ -39,6 +33,14 @@
         </span>
       </template>
     </span>
+    <div class="meta">
+      <time>
+        <strong>Time:</strong>
+        {{ timeStart }} -
+        {{ timeEnd }}
+      </time>
+      <p v-if="description">{{ description }}</p>
+    </div>
   </li>
 </template>
 
@@ -60,11 +62,9 @@ defineProps({
   },
   timeStart: {
     type: String,
-    required: true,
   },
   timeEnd: {
     type: String,
-    required: true,
   },
   editable: {
     type: Boolean,
@@ -93,31 +93,30 @@ const decrease = () => {
 
 <style lang="scss">
 li.param {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-areas:
+    "value"
+    "label"
+    "meta";
   .label {
+    grid-area: label;
     .label-text {
-      font-size: 1.2em;
       font-weight: 700;
-    }
-    p {
-      margin: 0;
-      font-size: 0.85em;
-      color: var(--go-color-neutral-800);
-    }
-    time {
-      display: block;
-      font-weight: 400;
-      font-size: 0.85em;
+      font-size: 0.8em;
     }
   }
   .value {
+    grid-area: value;
     display: flex;
     align-items: center;
     gap: 1rem;
     font-size: 1.2em;
     color: var(--go-color-success-600);
+  }
+  .meta {
+    grid-area: meta;
+    font-size: 0.8em;
   }
 }
 </style>

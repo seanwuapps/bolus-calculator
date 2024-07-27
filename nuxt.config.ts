@@ -1,6 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
+  devServer: {
+    https: {
+      key: "./localhost-key.pem",
+      cert: "./localhost.pem",
+    },
+  },
   devtools: { enabled: true },
   app: {
     head: {
@@ -70,15 +76,8 @@ export default defineNuxtConfig({
         },
       ],
     },
-    injectRegister: "auto",
     workbox: {
       globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
-    },
-    injectManifest: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
-    },
-    client: {
-      installPrompt: true,
     },
     devOptions: {
       enabled: true,
