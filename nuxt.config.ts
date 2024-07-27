@@ -76,9 +76,6 @@ export default defineNuxtConfig({
         },
       ],
     },
-    workbox: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
-    },
     devOptions: {
       enabled: true,
       suppressWarnings: true,
