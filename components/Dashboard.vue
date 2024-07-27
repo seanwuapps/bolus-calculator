@@ -35,7 +35,11 @@
               </div>
             </div>
 
-            <GoButtonGroup class="mt-2" block="tablet" connected>
+            <GoButtonGroup
+              class="calculator-button-group"
+              block="all"
+              connected
+            >
               <GoButton
                 block="all"
                 variant="secondary"
@@ -45,7 +49,7 @@
                 :disabled="countDown < 4 || countDown > 28"
               >
                 <GoIcon name="refresh" decorative slot="prefix"></GoIcon>
-                Refresh ({{ countDown }})
+                <span>{{ countDown }}</span>
               </GoButton>
 
               <GoButton
@@ -55,7 +59,6 @@
                 @click="$emit('openCalculatorDialog')"
               >
                 <GoIcon name="calculate" decorative slot="prefix"></GoIcon>
-                Calculate Bolus
               </GoButton>
             </GoButtonGroup>
           </div>
@@ -199,21 +202,19 @@ dl {
     margin: 0;
     margin-bottom: 1rem;
   }
-  &.params {
-    dd {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-direction: row-reverse;
-      > div {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      > time {
-        font-size: 1.5rem;
-      }
-    }
+}
+
+ul.params {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+}
+
+.calculator-button-group {
+  margin-top: 1rem;
+  > * {
+    flex: 1;
   }
 }
 </style>

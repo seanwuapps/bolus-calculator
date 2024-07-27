@@ -26,6 +26,7 @@
       >
         <div slot="suffix">g</div>
       </GoInput>
+      <CurrentParamInfoPanel />
 
       <hr />
 
@@ -121,7 +122,6 @@ import { useBolusStore } from "@/stores/bolus.store";
 import {
   GoInput,
   GoButton,
-  GoDialog,
   GoIcon,
   GoButtonGroup,
   GoTooltip,
@@ -132,11 +132,12 @@ import {
 const settingsStore = useSettingsStore();
 const bolusStore = useBolusStore();
 const { settings } = storeToRefs(settingsStore);
-const { currentParams, currentBG, currentCarbs, lastBolus, actualBolus } =
+const { currentBG, currentCarbs, lastBolus, actualBolus } =
   storeToRefs(bolusStore);
+const { getCurrentParams } = bolusStore;
 
 const canCalculate = computed(() => {
-  const { targetBG, icr, isf } = currentParams.value;
+  const { targetBG, icr, isf } = getCurrentParams();
   return (
     !isNaN(Number(targetBG?.value)) &&
     !isNaN(Number(icr?.value)) &&
@@ -147,14 +148,14 @@ const canCalculate = computed(() => {
 });
 
 const getCorrectionBolus = () => {
-  const { targetBG, isf } = currentParams.value;
+  const { targetBG, isf } = getCurrentParams();
   const result =
     (Number(currentBG.value) - Number(targetBG?.value)) / Number(isf?.value);
   return Number(result.toFixed(2));
 };
 
 const getMealBolus = () => {
-  const { icr } = currentParams.value;
+  const { icr } = getCurrentParams();
   const result = Number(currentCarbs.value) / Number(icr?.value);
   return Number(result.toFixed(2));
 };
@@ -198,7 +199,7 @@ const emit = defineEmits(["close"]);
 
 const confirmBolus = async () => {
   // save bolus into history
-  const { targetBG, icr, isf } = currentParams.value;
+  const { targetBG, icr, isf } = getCurrentParams();
   await bolusStore.saveBolus(targetBG?.value, icr?.value, isf?.value);
 
   // reset display condition

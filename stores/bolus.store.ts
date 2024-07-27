@@ -136,7 +136,9 @@ export const useBolusStore = defineStore("bolus", {
         ? dayjs(this.lastBolus.ts).format("hh:mm A, DD MMM")
         : undefined;
     },
-    currentParams(): CurrentBolusParams {
+  },
+  actions: {
+    getCurrentParams(): CurrentBolusParams {
       const now = dayjs();
       const currentDate = now.format("YYYY-MM-DD");
       // find the current targetBG
@@ -155,8 +157,6 @@ export const useBolusStore = defineStore("bolus", {
         isf: currentISF,
       };
     },
-  },
-  actions: {
     async saveBolus(targetBG: any, icr: any, isf: any) {
       if (
         !this.currentBG ||

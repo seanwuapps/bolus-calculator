@@ -13,6 +13,12 @@ useSeoMeta({
 </script>
 <style lang="scss">
 :root {
-  --go-heading-font-family: "Raleway", sans-serif;
+  --go-heading-font-family: "Oswald", sans-serif;
+  --go-body-font-family: "Montserrat", sans-serif;
+}
+h1,
+h2 {
+  text-transform: uppercase;
+  font-weight: 700 !important;
 }
 </style>

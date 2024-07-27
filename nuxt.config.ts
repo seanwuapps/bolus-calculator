@@ -72,7 +72,8 @@ export default defineNuxtConfig({
   },
   googleFonts: {
     families: {
-      Raleway: true,
+      Oswald: true,
+      Montserrat: true,
     },
   },
 });

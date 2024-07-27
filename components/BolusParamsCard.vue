@@ -5,109 +5,40 @@
       heading="Current Bolus Parameters"
       sub-heading="Bolus settings applicable currently"
     >
-      <dl class="params" v-if="!!activeParams">
-        <dt>
-          <span>Target BG</span>
-        </dt>
-        <dd>
-          <div>
-            <GoButton
-              compact
-              round
-              icon
-              @click="setParamOverride('targetBG', -0.1)"
-              aria-label="Decrease 0.1"
-            >
-              <GoIcon name="remove" decorative></GoIcon>
-            </GoButton>
-            <span>
-              <strong>{{ activeParams.targetBG?.value }}</strong> mmol/L
-            </span>
-            <GoButton
-              compact
-              round
-              icon
-              @click="setParamOverride('targetBG', 0.1)"
-              aria-label="Increase 0.1"
-            >
-              <GoIcon name="add" decorative></GoIcon>
-            </GoButton>
-          </div>
-          <time>
-            {{ activeParams.targetBG?.start }} -
-            {{ activeParams.targetBG?.end }}
-          </time>
-        </dd>
-        <dt>
-          <span> Insulin Carb Ratio (ICR) </span>
-          <div style="font-weight: normal">
-            Affects "meal" bolus calculation, higher = less insulin
-          </div>
-        </dt>
-        <dd>
-          <div>
-            <GoButton
-              compact
-              round
-              icon
-              @click="setParamOverride('icr', -1, 0)"
-              aria-label="Decrease 1g"
-            >
-              <GoIcon name="remove" decorative></GoIcon>
-            </GoButton>
-            <span>
-              1u for <strong>{{ activeParams.icr?.value }}g</strong>
-            </span>
-            <GoButton
-              compact
-              round
-              icon
-              @click="setParamOverride('icr', 1, 0)"
-              aria-label="Increase 1g"
-            >
-              <GoIcon name="add" decorative></GoIcon>
-            </GoButton>
-          </div>
-          <time>
-            {{ activeParams.icr?.start }} - {{ activeParams.icr?.end }}
-          </time>
-        </dd>
-        <dt>
-          <span> Insulin Sensitivity Factor (ISF) </span>
-          <div style="font-weight: normal">
-            Affects "correction" bolus calculation, higher = less insulin
-          </div>
-        </dt>
-        <dd>
-          <div>
-            <GoButton
-              compact
-              round
-              icon
-              @click="setParamOverride('isf', -0.1)"
-              aria-label="Decrease 0.1"
-            >
-              <GoIcon name="remove" decorative></GoIcon>
-            </GoButton>
-            <span>
-              1u for <strong>{{ activeParams.isf?.value }}</strong> mmol/L
-            </span>
-            <GoButton
-              compact
-              round
-              icon
-              @click="setParamOverride('isf', 0.1)"
-              aria-label="Increase 0.1"
-            >
-              <GoIcon name="add" decorative></GoIcon>
-            </GoButton>
-          </div>
-          <time>
-            {{ activeParams.isf?.start }} - {{ activeParams.isf?.end }}
-          </time>
-        </dd>
-      </dl>
-      <div slot="footer">
+      <ul class="params" v-if="!!activeParams">
+        <ParamItem
+          label="Target BG"
+          :value="`${activeParams.targetBG?.value} mmol/L`"
+          :editable="!readonly"
+          :timeStart="activeParams.targetBG?.start"
+          :timeEnd="activeParams.targetBG?.end"
+          @increase="setParamOverride('targetBG', 0.1)"
+          @decrease="setParamOverride('targetBG', -0.1)"
+        />
+        <ParamItem
+          v-if="activeParams.icr?.value"
+          label="Insulin Carb Ratio (ICR)"
+          description="Affects 'meal' bolus calculation, higher = less insulin"
+          :value="`1u for ${activeParams.icr?.value}g`"
+          :editable="!readonly"
+          :timeStart="activeParams.icr?.start"
+          :timeEnd="activeParams.icr?.end"
+          @increase="setParamOverride('icr', 1, 0)"
+          @decrease="setParamOverride('icr', -1, 0)"
+        />
+        <ParamItem
+          v-if="activeParams.isf?.value"
+          label="Insulin Sensitivity Factor (ISF)"
+          description="Affects 'correction' bolus calculation, higher = less insulin"
+          :value="`1u for ${activeParams.isf?.value} mmol/L`"
+          :editable="!readonly"
+          :timeStart="activeParams.isf?.start"
+          :timeEnd="activeParams.isf?.end"
+          @increase="setParamOverride('isf', 0.1)"
+          @decrease="setParamOverride('isf', -0.1)"
+        />
+      </ul>
+      <div slot="footer" v-if="!readonly">
         <GoButtonGroup>
           <GoButton
             block="tablet"
@@ -151,6 +82,12 @@ import {
 
 export default defineComponent({
   emits: ["open-params-dialog"],
+  props: {
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup() {
     const settingsStore = useSettingsStore();
     const bolusStore = useBolusStore();
@@ -170,17 +107,18 @@ export default defineComponent({
   },
   computed: {
     activeParams() {
+      const currentParams = this.bolusStore.getCurrentParams();
       if (this.bolusStore.paramOverrides) {
         return {
-          ...this.bolusStore.currentParams,
+          ...currentParams,
           ...this.bolusStore.paramOverrides,
         };
       }
-      return this.bolusStore.currentParams;
+      return currentParams;
     },
     hasDiff() {
       const { targetBG, icr, isf } = this.activeParams;
-      const { currentParams } = this.bolusStore;
+      const currentParams = this.bolusStore.getCurrentParams();
 
       return (
         Number(targetBG?.value) !== Number(currentParams.targetBG?.value) ||

@@ -34,7 +34,8 @@ const emit = defineEmits(["close"]);
 const settingsStore = useSettingsStore();
 const bolusStore = useBolusStore();
 
-const { currentParams } = storeToRefs(bolusStore);
+const currentParams = computed(() => bolusStore.getCurrentParams());
+
 const OVERRIDE_TYPE_LABELS = {
   targetBG: "Target BG",
   icr: "ICR",
