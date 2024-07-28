@@ -23,5 +23,4 @@ logs
 .env.*
 !.env.example
 
-sw.*
 *.pem
