@@ -1,5 +1,6 @@
 <template>
   <VitePwaManifest />
+
   <NuxtPage />
 </template>
 <script setup lang="ts">
@@ -9,6 +10,12 @@ useSeoMeta({
   description: "A simple bolus calculator app",
   ogDescription: "A simple bolus calculator app",
   themeColor: "#5c5adc",
+});
+
+// If you want to use it in setup, import from the nuxtApp.
+const { $pwa } = useNuxtApp();
+onMounted(() => {
+  if ($pwa.offlineReady) alert("App ready to work offline");
 });
 </script>
 <style lang="scss">
