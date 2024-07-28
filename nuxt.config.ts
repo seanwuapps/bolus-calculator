@@ -21,11 +21,6 @@ export default defineNuxtConfig({
           href: "https://fonts.googleapis.com/icon?family=Material+Icons",
         },
       ],
-      script: [
-        {
-          src: "https://storage.googleapis.com/workbox-cdn/releases/6.4.1/workbox-sw.js",
-        },
-      ],
     },
   },
   css: [
@@ -46,9 +41,7 @@ export default defineNuxtConfig({
     redirect: false,
   },
   pwa: {
-    strategies: sw ? "injectManifest" : "generateSW",
-    srcDir: sw ? "service-worker" : undefined,
-    filename: sw ? "sw.ts" : undefined,
+    injectRegister: "script",
     registerType: "autoUpdate",
     manifest: {
       name: "Bolus Calculator",
@@ -84,25 +77,6 @@ export default defineNuxtConfig({
           purpose: "maskable",
         },
       ],
-    },
-    workbox: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
-    },
-    injectManifest: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
-    },
-    client: {
-      installPrompt: true,
-      // you don't need to include this: only for testing purposes
-      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
-      periodicSyncForUpdates: 20,
-    },
-    devOptions: {
-      enabled: true,
-      suppressWarnings: true,
-      navigateFallback: "/",
-      navigateFallbackAllowlist: [/^\/$/],
-      type: "module",
     },
   },
   googleFonts: {
