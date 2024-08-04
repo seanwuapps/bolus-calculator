@@ -41,7 +41,6 @@ export default defineNuxtConfig({
     redirect: false,
   },
   pwa: {
-    registerType: "autoUpdate",
     manifest: {
       name: "Bolus Calculator",
       short_name: "Bolus Calculator",
@@ -77,8 +76,14 @@ export default defineNuxtConfig({
         },
       ],
     },
+
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+    },
+    includeAssets: ["**/*.{js,json,woff2,ttf,css,html,png,svg,ico}"],
     workbox: {
-      globPatterns: ["**/*.{js,css,html,png,svg,ico}"],
+      globPatterns: ["**/*.{js,json,woff2,ttf,css,html,png,svg,ico}"],
     },
   },
   googleFonts: {
