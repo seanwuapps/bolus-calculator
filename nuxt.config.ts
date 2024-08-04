@@ -76,14 +76,18 @@ export default defineNuxtConfig({
         },
       ],
     },
-
     devOptions: {
       enabled: true,
+      navigateFallback: "index.html",
       suppressWarnings: true,
+      type: "module",
     },
+    registerType: "prompt",
     includeAssets: ["**/*.{js,json,woff2,ttf,css,html,png,svg,ico}"],
     workbox: {
       globPatterns: ["**/*.{js,json,woff2,ttf,css,html,png,svg,ico}"],
+      cleanupOutdatedCaches: true,
+      clientsClaim: true,
     },
   },
   googleFonts: {
