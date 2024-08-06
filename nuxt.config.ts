@@ -76,18 +76,28 @@ export default defineNuxtConfig({
         },
       ],
     },
+    workbox: {
+      globPatterns: ["**/*.{js,json,woff2,css,html,png,svg,ico}"],
+    },
+    injectManifest: {
+      globPatterns: ["**/*.{js,json,woff2,css,html,png,svg,ico}"],
+    },
+    strategies: sw ? "injectManifest" : "generateSW",
+    srcDir: sw ? "service-worker" : undefined,
+    filename: sw ? "sw.ts" : undefined,
+    registerType: "autoUpdate",
+    client: {
+      installPrompt: true,
+      // you don't need to include this: only for testing purposes
+      // if enabling periodic sync for update use 1 hour or so (periodicSyncForUpdates: 3600)
+      periodicSyncForUpdates: 20,
+    },
     devOptions: {
       enabled: true,
-      navigateFallback: "index.html",
       suppressWarnings: true,
+      navigateFallback: "/",
+      navigateFallbackAllowlist: [/^\/$/],
       type: "module",
-    },
-    registerType: "prompt",
-    includeAssets: ["**/*.{js,json,woff2,ttf,css,html,png,svg,ico}"],
-    workbox: {
-      globPatterns: ["**/*.{js,json,woff2,ttf,css,html,png,svg,ico}"],
-      cleanupOutdatedCaches: true,
-      clientsClaim: true,
     },
   },
   googleFonts: {
