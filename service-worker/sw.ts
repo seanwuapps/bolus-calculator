@@ -6,7 +6,9 @@ import {
   precacheAndRoute,
 } from "workbox-precaching";
 import { clientsClaim } from "workbox-core";
-import { NavigationRoute, registerRoute } from "workbox-routing";
+import { NavigationRoute, registerRoute, Route } from "workbox-routing";
+
+import { StaleWhileRevalidate } from "workbox-strategies";
 
 declare let self: ServiceWorkerGlobalScope;
 
@@ -24,3 +26,14 @@ registerRoute(new NavigationRoute(createHandlerBoundToURL("/"), { allowlist }));
 
 self.skipWaiting();
 clientsClaim();
+
+// Handle images:
+const apiRoutes = new Route(
+  ({ request }) => {
+    return request.url.includes("/api");
+  },
+  new StaleWhileRevalidate({
+    cacheName: "api",
+  })
+);
+registerRoute(apiRoutes);

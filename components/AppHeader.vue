@@ -66,6 +66,9 @@
         width="20rem"
         persistent
       >
+        <GoDropdownItem>
+          <GoIcon name="person" class="mr-1" decorative /> {{ user.email }}
+        </GoDropdownItem>
         <GoDropdownItem @click="openSyncDataDialog">
           <GoIcon name="backup" decorative /> Backup data
         </GoDropdownItem>
